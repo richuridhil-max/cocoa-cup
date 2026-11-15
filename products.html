@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COCOACUP™ — Products & Commercial Pricing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Product Showcase Specifics */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 24px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.35s var(--spring-ease);
+      backdrop-filter: blur(20px);
+    }
+
+    .product-card:hover {
+      border-color: var(--border-card-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+    }
+
+    .product-card.featured {
+      border-color: rgba(229, 179, 106, 0.45);
+      background: linear-gradient(180deg, rgba(32, 22, 16, 0.9) 0%, rgba(18, 13, 10, 0.85) 100%);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--accent-warm), var(--accent-gold));
+      color: #0c0907;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .product-visual {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .cup-render {
+      position: relative;
+      width: 140px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s var(--spring-ease);
+    }
+
+    .product-card:hover .cup-render {
+      transform: scale(1.08) rotate(-2deg);
+    }
+
+    /* SVG Cup Illustration with Cocoa Texture Gradient */
+    .cup-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+    }
+
+    .product-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .product-vol {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .product-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .product-specs {
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 0;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+    }
+
+    .spec-label {
+      color: var(--text-muted);
+    }
+
+    .spec-value {
+      font-weight: 600;
+      color: var(--accent-cream);
+    }
+
+    .product-pricing-bar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .price-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-gold);
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Pricing Tier Section */
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tier-card:hover {
+      border-color: var(--border-card-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+    }
+
+    .tier-card.popular {
+      border-color: var(--accent-gold);
+      box-shadow: 0 10px 30px rgba(229, 179, 106, 0.15);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 12px;
+    }
+
+    .tier-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .tier-price {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent-cream);
+      margin-bottom: 4px;
+    }
+
+    .tier-price span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .tier-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .tier-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .tier-feature-item {
+      font-size: 12.5px;
+      color: var(--accent-cream);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tier-feature-item svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent-gold);
+      flex-shrink: 0;
+    }
+
+    /* Interactive Savings Calculator */
+    .calculator-box {
+      background: linear-gradient(135deg, rgba(28, 20, 15, 0.95), rgba(16, 11, 8, 0.95));
+      border: 1px solid rgba(229, 179, 106, 0.3);
+      border-radius: 28px;
+      padding: 44px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      margin-top: 50px;
+    }
+
+    .calc-slider-wrap {
+      margin: 32px 0 36px;
+    }
+
+    .calc-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+      cursor: pointer;
+      box-shadow: 0 0 14px var(--accent-gold);
+    }
+
+    .calc-output-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .calc-stat-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .calc-stat-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .calc-stat-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Specs Matrix Table */
+    .specs-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      overflow-x: auto;
+      margin-top: 40px;
+    }
+
+    table.specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    table.specs-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 16px 22px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 12px;
+    }
+
+    table.specs-table td {
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+
+    table.specs-table tr:hover td {
+      background: rgba(229, 179, 106, 0.04);
+      color: #ffffff;
+    }
+
+    table.specs-table td strong {
+      color: var(--accent-cream);
+    }
+
+    @media (max-width: 992px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .tiers-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .calc-output-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .tiers-grid {
+        grid-template-columns: 1fr;
+      }
+      .calculator-box {
+        padding: 24px;
+      }
+      .calc-output-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-ambient-glow"></div>
+
+  <!-- Unified Luxury Site Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-emblem">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">COCOA<span>CUP</span></span>
+          <span class="brand-tagline">Kerala's Sustainable Tableware</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="products.html" class="nav-link active">Products & Rates</a></li>
+        <li><a href="process.html" class="nav-link">Craft & Process</a></li>
+        <li><a href="story.html" class="nav-link">Our Story & Impact</a></li>
+        <li><a href="contact.html" class="nav-link">B2B / Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="contact.html#sample" class="btn-sample">
+          <span>Request Samples</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </a>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <a href="index.html" class="nav-link">Home (Interactive 3D Stage)</a>
+    <a href="products.html" class="nav-link active">Products & Commercial Rates</a>
+    <a href="process.html" class="nav-link">5-Stage Craft & Process</a>
+    <a href="story.html" class="nav-link">Our Story & Kerala Farmers</a>
+    <a href="contact.html" class="nav-link">Wholesale Order & Contact</a>
+    <a href="contact.html#sample" class="btn-primary" style="margin-top: 10px;">Request Sample Kit</a>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Hero Section -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-pill-badge">
+          <span class="dot"></span>
+          <span>100% Biodegradable Tableware Lineup</span>
+        </div>
+        <h1 class="page-title">
+          Crafted for Coffee. <br>
+          <span class="highlight">Born from Kerala Cocoa Husks.</span>
+        </h1>
+        <p class="page-description">
+          Engineered from discarded agricultural cocoa pod husks with a delicate hint of natural chocolate aroma. 
+          Zero plastic coatings, zero paraffin wax, and 100% home compostable within 90 days.
+        </p>
+
+        <!-- Fast Metrics Strip -->
+        <div class="metrics-strip">
+          <div class="metric-pill">
+            <div class="metric-val">₹12</div>
+            <div class="metric-label">Benchmark Base Rate / Unit</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">100°C</div>
+            <div class="metric-label">Boiling Heat Resistance</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">90 Days</div>
+            <div class="metric-label">Natural Soil Biodegradation</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">15,000</div>
+            <div class="metric-label">Daily Production Capacity</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Lineup Section -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Flagship Collection</div>
+          <h2 class="section-title">Designed for Every Sip & Brew</h2>
+        </div>
+
+        <div class="products-grid">
+          <!-- Card 1: Espresso -->
+          <div class="product-card">
+            <div class="product-visual">
+              <div class="cup-render">
+                <svg class="cup-svg" viewBox="0 0 100 120">
+                  <defs>
+                    <linearGradient id="cocoaGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#734d35"/>
+                      <stop offset="50%" stop-color="#4a2e1d"/>
+                      <stop offset="100%" stop-color="#2a180d"/>
+                    </linearGradient>
+                    <linearGradient id="rimGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#e5b36a"/>
+                      <stop offset="100%" stop-color="#c88d48"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Base & Body -->
+                  <polygon points="25,110 75,110 82,32 18,32" fill="url(#cocoaGrad1)" stroke="#e5b36a" stroke-width="0.8"/>
+                  <!-- Rim -->
+                  <ellipse cx="50" cy="32" rx="33" ry="6" fill="#3a2214" stroke="url(#rimGrad1)" stroke-width="1.5"/>
+                  <!-- Cocoa Husk Texture Accents -->
+                  <path d="M 32,55 Q 50,60 68,55" stroke="rgba(229,179,106,0.3)" stroke-width="1" fill="none"/>
+                  <path d="M 35,80 Q 50,85 65,80" stroke="rgba(229,179,106,0.2)" stroke-width="1" fill="none"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="product-title">The Espresso Shot</h3>
+            <div class="product-vol">90 ml &bull; 3 oz Single / Double</div>
+            <p class="product-desc">
+              A compact, dense thermal wall cup engineered for high-pressure single and double espresso shots, macchiatos, and tasting flights. Retains crema temperature with zero plastic leeching.
+            </p>
+            <ul class="product-specs">
+              <li class="spec-item"><span class="spec-label">Wall Thickness</span><span class="spec-value">1.8 mm High-Density</span></li>
+              <li class="spec-item"><span class="spec-label">Heat Tolerance</span><span class="spec-value">Up to 100°C</span></li>
+              <li class="spec-item"><span class="spec-label">Aroma Profile</span><span class="spec-value">Subtle Cocoa Finish</span></li>
+              <li class="spec-item"><span class="spec-label">Disposal</span><span class="spec-value">100% Home Compostable</span></li>
+            </ul>
+            <div class="product-pricing-bar">
+              <div>
+                <span class="price-num">₹10.50</span>
+                <span class="price-note">/ unit wholesale</span>
+              </div>
+              <span class="price-note">MOQ: 500 pcs</span>
+            </div>
+            <a href="contact.html?product=espresso" class="btn-secondary" style="width:100%; text-align:center;">Order Wholesale</a>
+          </div>
+
+          <!-- Card 2: Cappuccino (Flagship Featured) -->
+          <div class="product-card featured">
+            <span class="featured-badge">Most Popular</span>
+            <div class="product-visual">
+              <div class="cup-render">
+                <svg class="cup-svg" viewBox="0 0 110 140">
+                  <defs>
+                    <linearGradient id="cocoaGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#805439"/>
+                      <stop offset="40%" stop-color="#553422"/>
+                      <stop offset="100%" stop-color="#2c1a10"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Body -->
+                  <polygon points="28,130 82,130 92,38 18,38" fill="url(#cocoaGrad2)" stroke="#e5b36a" stroke-width="1.2"/>
+                  <!-- Rim -->
+                  <ellipse cx="55" cy="38" rx="38" ry="7" fill="#3c2416" stroke="#e5b36a" stroke-width="2"/>
+                  <!-- Decorative Ribs -->
+                  <path d="M 30,65 Q 55,72 80,65" stroke="rgba(229,179,106,0.35)" stroke-width="1.2" fill="none"/>
+                  <path d="M 33,95 Q 55,102 77,95" stroke="rgba(229,179,106,0.25)" stroke-width="1.2" fill="none"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="product-title">The Artisan Cappuccino</h3>
+            <div class="product-vol">200 ml &bull; 7 oz Flagship Cup</div>
+            <p class="product-desc">
+              The benchmark workhorse for specialty coffee shops. Perfect for flat whites, cappuccinos, cortados, and artisan hot chocolates. Ergonomic textured grip that stays comfortable in hand.
+            </p>
+            <ul class="product-specs">
+              <li class="spec-item"><span class="spec-label">Wall Thickness</span><span class="spec-value">2.2 mm Insulated Wall</span></li>
+              <li class="spec-item"><span class="spec-label">Leak Endurance</span><span class="spec-value">4+ Hours Confirmed</span></li>
+              <li class="spec-item"><span class="spec-label">Inner Lining</span><span class="spec-value">Zero Wax / Zero Plastic</span></li>
+              <li class="spec-item"><span class="spec-label">Soil Breakdown</span><span class="spec-value">90 Days Full Soil Return</span></li>
+            </ul>
+            <div class="product-pricing-bar">
+              <div>
+                <span class="price-num">₹12.00</span>
+                <span class="price-note">/ unit base rate</span>
+              </div>
+              <span class="price-note">MOQ: 500 pcs</span>
+            </div>
+            <a href="contact.html?product=cappuccino" class="btn-primary" style="width:100%; text-align:center;">Select Flagship</a>
+          </div>
+
+          <!-- Card 3: Grande Brewer -->
+          <div class="product-card">
+            <div class="product-visual">
+              <div class="cup-render">
+                <svg class="cup-svg" viewBox="0 0 120 160">
+                  <defs>
+                    <linearGradient id="cocoaGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#69432c"/>
+                      <stop offset="50%" stop-color="#46291a"/>
+                      <stop offset="100%" stop-color="#24150c"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Body -->
+                  <polygon points="30,150 90,150 102,34 18,34" fill="url(#cocoaGrad3)" stroke="#e5b36a" stroke-width="0.8"/>
+                  <!-- Rim -->
+                  <ellipse cx="60" cy="34" rx="43" ry="8" fill="#351f13" stroke="#e5b36a" stroke-width="1.5"/>
+                  <!-- Cocoa Husk Lines -->
+                  <path d="M 31,65 Q 60,74 89,65" stroke="rgba(229,179,106,0.25)" stroke-width="1" fill="none"/>
+                  <path d="M 33,100 Q 60,110 87,100" stroke="rgba(229,179,106,0.2)" stroke-width="1" fill="none"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="product-title">The Grande Brewer</h3>
+            <div class="product-vol">350 ml &bull; 12 oz Regular / Large</div>
+            <p class="product-desc">
+              Engineered for pour-overs, Americanos, Kerala filter coffees, artisan milk teas, and iced cold brews. High mechanical rigidity without the soggy bottom common to paper cups.
+            </p>
+            <ul class="product-specs">
+              <li class="spec-item"><span class="spec-label">Wall Thickness</span><span class="spec-value">2.4 mm Reinforced</span></li>
+              <li class="spec-item"><span class="spec-label">Cold & Hot Use</span><span class="spec-value">-10°C to 100°C Range</span></li>
+              <li class="spec-item"><span class="spec-label">Rigidity Rating</span><span class="spec-value">3.8 kN/m Compression</span></li>
+              <li class="spec-item"><span class="spec-label">Certified Safe</span><span class="spec-value">Food Grade Plant Binder</span></li>
+            </ul>
+            <div class="product-pricing-bar">
+              <div>
+                <span class="price-num">₹13.50</span>
+                <span class="price-note">/ unit wholesale</span>
+              </div>
+              <span class="price-note">MOQ: 500 pcs</span>
+            </div>
+            <a href="contact.html?product=grande" class="btn-secondary" style="width:100%; text-align:center;">Order Wholesale</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Commercial Pricing Packages (Extracted from Pitch Deck) -->
+    <section class="section-pad" style="background: rgba(0,0,0,0.25);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Commercial Pricing & Volume Tiers</div>
+          <h2 class="section-title">Transparent B2B Rates for Every Business</h2>
+        </div>
+
+        <div class="tiers-grid">
+          <!-- Tier 1: Sample Kit -->
+          <div class="tier-card">
+            <span class="tier-badge">Trial & Evaluation</span>
+            <h4 class="tier-name">Sample Kit</h4>
+            <div class="tier-price">₹499 <span>/ box</span></div>
+            <div class="tier-subtext">30 mixed cups delivered directly to your cafe door</div>
+            <ul class="tier-features">
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                10x Espresso (90ml)
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                10x Cappuccino (200ml)
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                10x Grande (350ml)
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Compost Test Guide + Specs
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Dispatched in 24 Hours
+              </li>
+            </ul>
+            <a href="contact.html#sample" class="btn-secondary" style="width:100%; text-align:center;">Order Sample Kit</a>
+          </div>
+
+          <!-- Tier 2: Cafe Starter (Popular) -->
+          <div class="tier-card popular">
+            <span class="tier-badge" style="color:var(--accent-gold);">Recommended</span>
+            <h4 class="tier-name">Cafe Starter</h4>
+            <div class="tier-price">₹6,000 <span>/ batch</span></div>
+            <div class="tier-subtext">500 Flagship cups @ ₹12.00 / cup baseline</div>
+            <ul class="tier-features">
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                500x Artisan Cappuccino (200ml)
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Standard Retail Master Carton
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Tabletop "Kerala Cocoa" Table Talkers
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Free Delivery Across Kerala
+              </li>
+            </ul>
+            <a href="contact.html?tier=starter" class="btn-primary" style="width:100%; text-align:center;">Order 500 Cups</a>
+          </div>
+
+          <!-- Tier 3: Commercial Wholesale -->
+          <div class="tier-card">
+            <span class="tier-badge">High Volume Cafe Chains</span>
+            <h4 class="tier-name">Commercial Bulk</h4>
+            <div class="tier-price">₹10.50 <span>/ cup</span></div>
+            <div class="tier-subtext">5,000+ units (Total ₹52,500)</div>
+            <ul class="tier-features">
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Choice of Sizes (90 / 200 / 350ml)
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                ₹1.50 / Cup Volume Discount
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Direct Factory Dispatch from Kerala
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Quarterly Supply Schedule Locking
+              </li>
+            </ul>
+            <a href="contact.html?tier=wholesale" class="btn-secondary" style="width:100%; text-align:center;">Request Bulk Quote</a>
+          </div>
+
+          <!-- Tier 4: Enterprise Custom -->
+          <div class="tier-card">
+            <span class="tier-badge">Institutional / Resorts</span>
+            <h4 class="tier-name">Custom Embossing</h4>
+            <div class="tier-price">Custom <span>/ SLA</span></div>
+            <div class="tier-subtext">25,000+ units with branded mould design</div>
+            <ul class="tier-features">
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Precision CNC Base Logo Embossing
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Dedicated Factory Production Batch
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Export Grade Packaging & Logistics
+              </li>
+              <li class="tier-feature-item">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Priority Account Manager
+              </li>
+            </ul>
+            <a href="contact.html?tier=enterprise" class="btn-secondary" style="width:100%; text-align:center;">Consult Enterprise</a>
+          </div>
+        </div>
+
+        <!-- Interactive Calculator for Cafes -->
+        <div class="calculator-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div class="section-subtitle" style="text-align:left;">Interactive Sustainability Calculator</div>
+              <h3 style="font-size: 24px; font-weight:700; color:#fff;">Calculate Your Cafe's Environmental Transition</h3>
+            </div>
+            <div style="font-size: 14px; color: var(--accent-gold); font-weight: 600;">
+              Daily Volume: <span id="calc-val-display" style="font-size:20px; font-weight:800; color:#fff;">250</span> cups / day
+            </div>
+          </div>
+
+          <div class="calc-slider-wrap">
+            <input type="range" min="50" max="2000" step="25" value="250" class="calc-slider" id="cafe-slider">
+          </div>
+
+          <div class="calc-output-grid">
+            <div class="calc-stat-card">
+              <div class="calc-stat-val" id="calc-plastic-prevented">7,500</div>
+              <div class="calc-stat-label">Plastic-Lined Cups Prevented / Mo</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-val" id="calc-husks-diverted">187 kg</div>
+              <div class="calc-stat-label">Kerala Cocoa Husks Repurposed</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-val" id="calc-co2-offset">345 kg</div>
+              <div class="calc-stat-label">CO2e Emissions Diverted</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-val" id="calc-monthly-cost">₹90,000</div>
+              <div class="calc-stat-label">Est. Monthly Tableware Investment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Specifications Matrix -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Laboratory Rigor & Material Science</div>
+          <h2 class="section-title">Technical Specifications & Testing Data</h2>
+        </div>
+
+        <div class="specs-table-wrap">
+          <table class="specs-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>COCOACUP™ Standard</th>
+                <th>Conventional Paper Cups</th>
+                <th>Standard PLA Bioplastic</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Primary Raw Material</strong></td>
+                <td>Upcycled Kerala Cocoa Pod Husks (75%)+ Plant Binders</td>
+                <td>Virgin Virgin Wood Pulp (Deforestation)</td>
+                <td>Industrial Corn Starch (Food Crop diversion)</td>
+              </tr>
+              <tr>
+                <td><strong>Internal Barrier Liner</strong></td>
+                <td>Natural Lignin Thermo-compression (Zero Plastic)</td>
+                <td>Polyethylene (PE) or Wax Coating</td>
+                <td>Polylactic Acid (PLA Synthetic Polymer)</td>
+              </tr>
+              <tr>
+                <td><strong>Boiling Heat Resistance</strong></td>
+                <td>Up to 100°C (Certified zero softening)</td>
+                <td>Softens after 45 mins; microplastic release</td>
+                <td>Deforms at 55°C (Unsuitable for hot coffee)</td>
+              </tr>
+              <tr>
+                <td><strong>Sensory Experience</strong></td>
+                <td>Natural delicate cocoa aroma; neutral beverage taste</td>
+                <td>Chemical paper taste; cardboard odor</td>
+                <td>Synthetic feel; prone to warping</td>
+              </tr>
+              <tr>
+                <td><strong>Soil Biodegradation</strong></td>
+                <td>90 Days in standard garden soil / compost</td>
+                <td>30+ Years (Plastic film remains forever)</td>
+                <td>Requires commercial industrial heat (>60°C)</td>
+              </tr>
+              <tr>
+                <td><strong>Circular Economy Contribution</strong></td>
+                <td>Monetizes discarded Kerala cocoa agricultural waste</td>
+                <td>Linear landfill waste stream</td>
+                <td>Requires dedicated high-energy facilities</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Unified Luxury Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Col 1 -->
+        <div class="footer-col-brand">
+          <a href="index.html" class="brand-logo">
+            <div class="brand-emblem">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <span class="brand-name">COCOA<span>CUP</span></span>
+              <span class="brand-tagline">Kerala's Sustainable Tableware</span>
+            </div>
+          </a>
+          <p class="footer-about-text">
+            Transforming agricultural cocoa pod husks from Kerala farmers into 100% biodegradable, heat-resistant disposable cups with a natural aroma of chocolate.
+          </p>
+          <div class="footer-farmer-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>
+            </svg>
+            <span>Direct Sourcing from Kerala Cocoa Planters</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Navigation -->
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Home (Interactive 3D)</a></li>
+            <li><a href="products.html" class="footer-link">Products & Pricing</a></li>
+            <li><a href="process.html" class="footer-link">5-Stage Craft & Science</a></li>
+            <li><a href="story.html" class="footer-link">Our Story & Impact</a></li>
+            <li><a href="contact.html" class="footer-link">B2B Sample Requests</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Product Sizes -->
+        <div>
+          <h4 class="footer-heading">Product Line</h4>
+          <ul class="footer-links">
+            <li><a href="products.html" class="footer-link">Espresso Shot (90ml)</a></li>
+            <li><a href="products.html" class="footer-link">Flagship Cappuccino (200ml)</a></li>
+            <li><a href="products.html" class="footer-link">Grande Brewer (350ml)</a></li>
+            <li><a href="products.html#pricing" class="footer-link">Cafe Starter Batch (500 units)</a></li>
+            <li><a href="contact.html" class="footer-link">Custom Logo Embossing</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Commercial Hub -->
+        <div>
+          <h4 class="footer-heading">Production Hub</h4>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>Kerala, India (Cocoa Agricultural Belt)</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span>orders@cocoacup.in</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            <span>Commercial Wholesale: +91 (Kerala Operations)</span>
+          </div>
+          <div style="margin-top: 14px;">
+            <a href="contact.html#sample" class="btn-sample" style="font-size: 11.5px; padding: 7px 14px;">Sample Dispatch &bull; 24h</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 COCOACUP™ Technologies. All Rights Reserved. Transforming Agriculture into Luxury.</div>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Food Safety Compliance</a>
+          <a href="#">Compost Certification</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Header scroll background toggle
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        siteHeader.classList.add('scrolled');
+      } else {
+        siteHeader.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile Drawer Toggle
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.toggle('open');
+    });
+
+    // Interactive Sustainability Calculator
+    const slider = document.getElementById('cafe-slider');
+    const displayVal = document.getElementById('calc-val-display');
+    const plasticEl = document.getElementById('calc-plastic-prevented');
+    const husksEl = document.getElementById('calc-husks-diverted');
+    const co2El = document.getElementById('calc-co2-offset');
+    const costEl = document.getElementById('calc-monthly-cost');
+
+    function updateCalc(val) {
+      displayVal.textContent = Number(val).toLocaleString();
+      const monthlyCups = val * 30;
+      plasticEl.textContent = monthlyCups.toLocaleString();
+      // Approx 25 grams of dry husk per cup -> 0.025 kg
+      const husksKg = Math.round(monthlyCups * 0.025);
+      husksEl.textContent = husksKg.toLocaleString() + ' kg';
+      // Approx 46 grams CO2e saved per cup converted from plastic-lined
+      const co2Kg = Math.round(monthlyCups * 0.046);
+      co2El.textContent = co2Kg.toLocaleString() + ' kg';
+      // Rate: benchmark ₹12/cup (discounted to ₹10.50 if > 5000/mo)
+      const unitRate = monthlyCups >= 5000 ? 10.5 : 12;
+      const cost = Math.round(monthlyCups * unitRate);
+      costEl.textContent = '₹' + cost.toLocaleString();
+    }
+
+    slider.addEventListener('input', (e) => {
+      updateCalc(e.target.value);
+    });
+    updateCalc(slider.value);
+  </script>
+</body>
+</html>

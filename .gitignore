@@ -1,0 +1,10 @@
+# Archives and compressed assets (frames are already extracted)
+ezgif-243680aa62db9010-png-split.zip
+*.zip
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.tmp
+.vscode/
+.idea/

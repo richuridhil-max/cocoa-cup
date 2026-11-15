@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COCOACUP™ — Our Story, Kerala Farmers & Environmental Impact</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Story Page Styling */
+    .story-hero-quote {
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent-gold);
+      max-width: 800px;
+      margin: 0 auto 30px;
+      line-height: 1.4;
+    }
+
+    .problem-solution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .crisis-card {
+      background: rgba(30, 15, 12, 0.7);
+      border: 1px solid rgba(255, 71, 87, 0.25);
+      border-radius: 22px;
+      padding: 36px;
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+
+    .crisis-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #ff6b81;
+      background: rgba(255, 107, 129, 0.12);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .solution-card {
+      background: rgba(20, 26, 18, 0.7);
+      border: 1px solid rgba(46, 213, 115, 0.25);
+      border-radius: 22px;
+      padding: 36px;
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+
+    .solution-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #2ed573;
+      background: rgba(46, 213, 115, 0.12);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .card-heading {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+
+    .card-body-text {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* Circular Flow Visual */
+    .circular-system-box {
+      background: linear-gradient(135deg, rgba(24, 16, 12, 0.95), rgba(14, 10, 8, 0.95));
+      border: 1px solid rgba(229, 179, 106, 0.25);
+      border-radius: 28px;
+      padding: 48px;
+      margin-top: 50px;
+    }
+
+    .cycle-steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      position: relative;
+      margin-top: 36px;
+    }
+
+    .cycle-node {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 22px 16px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .cycle-node:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+      background: rgba(229, 179, 106, 0.06);
+    }
+
+    .cycle-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(229, 179, 106, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      color: var(--accent-gold);
+    }
+
+    .cycle-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .cycle-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .cycle-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* 3-Year Projection Milestones (From PDF) */
+    .projections-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .projection-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 22px;
+      padding: 32px 28px;
+      backdrop-filter: blur(16px);
+      transition: all 0.35s ease;
+      position: relative;
+    }
+
+    .projection-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+    }
+
+    .year-tag {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    .proj-units {
+      font-size: 34px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .proj-revenue {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-warm);
+      margin-bottom: 18px;
+    }
+
+    .proj-impact-list {
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .proj-impact-list strong {
+      color: var(--accent-cream);
+    }
+
+    /* Kerala Farmer Spotlight */
+    .farmer-spotlight-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 26px;
+      padding: 44px;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .farmer-visual {
+      background: linear-gradient(135deg, rgba(46, 32, 22, 0.9), rgba(20, 14, 10, 0.95));
+      border: 1px solid rgba(229, 179, 106, 0.2);
+      border-radius: 20px;
+      padding: 36px;
+      text-align: center;
+    }
+
+    .farmer-stat-num {
+      font-size: 46px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .farmer-stat-label {
+      font-size: 13px;
+      color: var(--accent-cream);
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 992px) {
+      .problem-solution-grid {
+        grid-template-columns: 1fr;
+      }
+      .cycle-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+      .projections-grid {
+        grid-template-columns: 1fr;
+      }
+      .farmer-spotlight-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cycle-steps {
+        grid-template-columns: 1fr;
+      }
+      .circular-system-box {
+        padding: 24px;
+      }
+      .farmer-spotlight-box {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-ambient-glow"></div>
+
+  <!-- Unified Luxury Site Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-emblem">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">COCOA<span>CUP</span></span>
+          <span class="brand-tagline">Kerala's Sustainable Tableware</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="products.html" class="nav-link">Products & Rates</a></li>
+        <li><a href="process.html" class="nav-link">Craft & Process</a></li>
+        <li><a href="story.html" class="nav-link active">Our Story & Impact</a></li>
+        <li><a href="contact.html" class="nav-link">B2B / Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="contact.html#sample" class="btn-sample">
+          <span>Request Samples</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </a>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobile-drawer">
+    <a href="index.html" class="nav-link">Home (Interactive 3D Stage)</a>
+    <a href="products.html" class="nav-link">Products & Commercial Rates</a>
+    <a href="process.html" class="nav-link">5-Stage Craft & Process</a>
+    <a href="story.html" class="nav-link active">Our Story & Kerala Farmers</a>
+    <a href="contact.html" class="nav-link">Wholesale Order & Contact</a>
+    <a href="contact.html#sample" class="btn-primary" style="margin-top: 10px;">Request Sample Kit</a>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Hero Section -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-pill-badge">
+          <span class="dot"></span>
+          <span>The COCOACUP™ Manifesto</span>
+        </div>
+        <div class="story-hero-quote">
+          &ldquo;Sip sustainably with the essence of cocoa. Sip sustainably. Grow responsibly.&rdquo;
+        </div>
+        <h1 class="page-title">
+          A Kerala Agricultural Revolution <br>
+          <span class="highlight">For a Microplastic-Free World.</span>
+        </h1>
+        <p class="page-description">
+          Every year, billions of single-use cups end up in landfills because of hidden polyethylene plastic coatings. At the same time, thousands of tonnes of cocoa pod husks rot unused in Kerala orchards. We bridged the gap.
+        </p>
+
+        <!-- Fast Metrics Strip -->
+        <div class="metrics-strip">
+          <div class="metric-pill">
+            <div class="metric-val">100%</div>
+            <div class="metric-label">Circular Bio-Economy</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">75%</div>
+            <div class="metric-label">Husk Biomass Upcycled</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">₹1 Cr</div>
+            <div class="metric-label">Initial Capex Foundation</div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-val">5.4M</div>
+            <div class="metric-label">Year 3 Annual Cup Target</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Problem vs The Innovation -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">The Ecological Equation</div>
+          <h2 class="section-title">Solving Two Crises with One Elegant Solution</h2>
+        </div>
+
+        <div class="problem-solution-grid">
+          <!-- The Twin Problem -->
+          <div class="crisis-card">
+            <span class="crisis-pill">The Dual Ecological Crisis</span>
+            <h3 class="card-heading">16 Billion Cups Discarded & Millions of Rotten Husks</h3>
+            <div class="card-body-text">
+              <p style="margin-bottom: 14px;">
+                <strong>Crisis 1: The Plastic-Lined Lie.</strong> Conventional single-use paper cups are lined with a hidden 5% Polyethylene (PE) plastic coating to hold liquid. They cannot be recycled in regular paper facilities and take over 30 years to fragment into billions of toxic microplastics.
+              </p>
+              <p>
+                <strong>Crisis 2: Agricultural Waste Burden.</strong> Kerala cocoa farmers harvest millions of cocoa pods, but the beans account for only 25% of the pod's mass. The remaining 75%—the thick outer husk—is discarded in fields, generating methane and harboring fungal <em>Phytophthora</em> black pod blight.
+              </p>
+            </div>
+          </div>
+
+          <!-- The Innovation -->
+          <div class="solution-card">
+            <span class="solution-pill">The Circular Innovation</span>
+            <h3 class="card-heading">Upcycling Kerala Waste into Luxury Tableware</h3>
+            <div class="card-body-text">
+              <p style="margin-bottom: 14px;">
+                <strong>Our Breakthrough:</strong> We established a clean supply chain collecting fresh cocoa husks directly from farmers in Idukki, Wayanad, and Malabar. By applying precision micronization and high-pressure hydraulic thermo-moulding, we convert this agricultural biomass into 100% plastic-free cups.
+              </p>
+              <p>
+                <strong>The Result:</strong> High-performance disposable cups holding 100°C boiling drinks for hours, smelling subtly of chocolate, and degrading in backyards into nutrient-rich compost in just 90 days.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Closed-Loop Circular System -->
+        <div class="circular-system-box">
+          <div class="section-header" style="margin-bottom: 24px;">
+            <div class="section-subtitle">Closed-Loop Lifecycle</div>
+            <h3 style="font-size: 26px; font-weight:700; color:#fff;">The Perpetual Soil-to-Soil Cycle</h3>
+          </div>
+
+          <div class="cycle-steps">
+            <!-- Node 1 -->
+            <div class="cycle-node">
+              <div class="cycle-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <h4 class="cycle-name">1. Kerala Farms</h4>
+              <p class="cycle-desc">Cocoa trees cultivated by smallholders in Kerala's highlands.</p>
+            </div>
+
+            <!-- Node 2 -->
+            <div class="cycle-node">
+              <div class="cycle-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+              <h4 class="cycle-name">2. Husk Upcycling</h4>
+              <p class="cycle-desc">Discarded pod husks collected, solar-dried, and micronized.</p>
+            </div>
+
+            <!-- Node 3 -->
+            <div class="cycle-node">
+              <div class="cycle-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
+              </div>
+              <h4 class="cycle-name">3. Precision Mould</h4>
+              <p class="cycle-desc">180 bar thermo-compression forms seamless, rigid cups.</p>
+            </div>
+
+            <!-- Node 4 -->
+            <div class="cycle-node">
+              <div class="cycle-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </div>
+              <h4 class="cycle-name">4. Luxury Cafe Sip</h4>
+              <p class="cycle-desc">Hot coffee, tea, and beverages served with natural aroma.</p>
+            </div>
+
+            <!-- Node 5 -->
+            <div class="cycle-node">
+              <div class="cycle-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+              </div>
+              <h4 class="cycle-name">5. 90-Day Soil Return</h4>
+              <p class="cycle-desc">Breaks down naturally into organic compost to fertilize crops.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kerala Farmer Impact Spotlight -->
+    <section class="section-pad" style="background: rgba(0,0,0,0.25);">
+      <div class="container">
+        <div class="farmer-spotlight-box">
+          <div>
+            <div class="section-subtitle" style="text-align: left;">Community Empowerment</div>
+            <h2 style="font-size: 32px; font-weight:700; color:#fff; line-height: 1.25; margin-bottom: 18px;">
+              Empowering Kerala's Cocoa Farming Families
+            </h2>
+            <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px;">
+              For decades, smallholder cocoa farmers across Idukki, Wayanad, and Malabar treated cocoa pod husks as an inconvenient disposal problem. In wet monsoon months, rotting husks bred hazardous crop fungal pathogens.
+            </p>
+            <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.7;">
+              By establishing formal collection centers and offering guaranteed buyback rates for sun-dried husks, COCOACUP™ turns discarded farm byproduct into reliable supplementary income, cleaner farm grounds, and dignity for agricultural communities.
+            </p>
+          </div>
+
+          <div class="farmer-visual">
+            <div class="farmer-stat-num">+15-20%</div>
+            <div class="farmer-stat-label">Supplementary Farmer Income per Acre</div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 18px; display:flex; justify-content:space-around;">
+              <div>
+                <div style="font-size: 20px; font-weight:700; color:#fff;">3 Hubs</div>
+                <div style="font-size: 11px; color:var(--text-muted); text-transform:uppercase;">Idukki &bull; Wayanad &bull; Malabar</div>
+              </div>
+              <div>
+                <div style="font-size: 20px; font-weight:700; color:#fff;">100%</div>
+                <div style="font-size: 11px; color:var(--text-muted); text-transform:uppercase;">Fair Buyback Guaranteed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-Year Scaling Projections (Extracted from 21-Slide Presentation) -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Strategic Growth Roadmap</div>
+          <h2 class="section-title">3-Year Production & Impact Milestones</h2>
+        </div>
+
+        <div class="projections-grid">
+          <!-- Year 1 -->
+          <div class="projection-card">
+            <div class="year-tag">Year 01 &bull; Baseline Foundation</div>
+            <div class="proj-units">18,00,000</div>
+            <div class="proj-revenue">18 Lakh Units &bull; Projected ₹2.16 Cr Revenue</div>
+            <ul class="proj-impact-list">
+              <li>&bull; <strong>5,000 cups/day</strong> baseline run in specialty Kerala cafes</li>
+              <li>&bull; <strong>45 Metric Tonnes</strong> of cocoa pod husks upcycled</li>
+              <li>&bull; <strong>82 Metric Tonnes</strong> of CO2 emissions prevented</li>
+              <li>&bull; Launch in Kochi, Trivandrum, Kozhikode, and Bangalore</li>
+            </ul>
+          </div>
+
+          <!-- Year 2 -->
+          <div class="projection-card">
+            <div class="year-tag">Year 02 &bull; South India Expansion</div>
+            <div class="proj-units">36,00,000</div>
+            <div class="proj-revenue">36 Lakh Units &bull; Projected ₹4.32 Cr Revenue</div>
+            <ul class="proj-impact-list">
+              <li>&bull; <strong>10,000 cups/day</strong> steady-state factory capacity</li>
+              <li>&bull; <strong>90 Metric Tonnes</strong> of agricultural waste diverted</li>
+              <li>&bull; Partnerships with major regional cafe chains & luxury resorts</li>
+              <li>&bull; Commercial distribution across Kerala, Karnataka, and Tamil Nadu</li>
+            </ul>
+          </div>
+
+          <!-- Year 3 -->
+          <div class="projection-card" style="border-color: rgba(229,179,106,0.35);">
+            <div class="year-tag">Year 03 &bull; National & Export Scale</div>
+            <div class="proj-units">54,00,000</div>
+            <div class="proj-revenue">54 Lakh Units &bull; Projected ₹6.48 Cr Revenue</div>
+            <ul class="proj-impact-list">
+              <li>&bull; <strong>15,000 cups/day</strong> peak manufacturing line utilization</li>
+              <li>&bull; <strong>135 Metric Tonnes</strong> of organic farm husks upcycled</li>
+              <li>&bull; Pan-India institutional hospitality supply contracts</li>
+              <li>&bull; Export expansion to GCC & European specialty coffee markets</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;">
+          <a href="contact.html" class="btn-primary">
+            <span>Partner With Our Mission — Request B2B Samples</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Unified Luxury Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col-brand">
+          <a href="index.html" class="brand-logo">
+            <div class="brand-emblem">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <span class="brand-name">COCOA<span>CUP</span></span>
+              <span class="brand-tagline">Kerala's Sustainable Tableware</span>
+            </div>
+          </a>
+          <p class="footer-about-text">
+            Transforming agricultural cocoa pod husks from Kerala farmers into 100% biodegradable, heat-resistant disposable cups with a natural aroma of chocolate.
+          </p>
+          <div class="footer-farmer-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>
+            </svg>
+            <span>Direct Sourcing from Kerala Cocoa Planters</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Home (Interactive 3D)</a></li>
+            <li><a href="products.html" class="footer-link">Products & Pricing</a></li>
+            <li><a href="process.html" class="footer-link">5-Stage Craft & Science</a></li>
+            <li><a href="story.html" class="footer-link">Our Story & Impact</a></li>
+            <li><a href="contact.html" class="footer-link">B2B Sample Requests</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Product Line</h4>
+          <ul class="footer-links">
+            <li><a href="products.html" class="footer-link">Espresso Shot (90ml)</a></li>
+            <li><a href="products.html" class="footer-link">Flagship Cappuccino (200ml)</a></li>
+            <li><a href="products.html" class="footer-link">Grande Brewer (350ml)</a></li>
+            <li><a href="products.html#pricing" class="footer-link">Cafe Starter Batch (500 units)</a></li>
+            <li><a href="contact.html" class="footer-link">Custom Logo Embossing</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Production Hub</h4>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>Kerala, India (Cocoa Agricultural Belt)</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span>impact@cocoacup.in</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            <span>Agricultural Relations: +91 (Kerala Operations)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 COCOACUP™ Technologies. All Rights Reserved. Transforming Agriculture into Luxury.</div>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Food Safety Compliance</a>
+          <a href="#">Compost Certification</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const siteHeader = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        siteHeader.classList.add('scrolled');
+      } else {
+        siteHeader.classList.remove('scrolled');
+      }
+    });
+
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
