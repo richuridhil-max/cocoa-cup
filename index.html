@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>COCOACUP™ — Kerala's Sustainable Tableware</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
     html {
       scroll-behavior: smooth;
       background-color: var(--bg-dark);
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
@@ -82,20 +83,24 @@
       position: relative;
       width: 100%;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       background: #0c0907;
+      overscroll-behavior-y: none;
     }
 
     #stage-container {
       position: relative;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #0c0907;
       user-select: none;
+      touch-action: pan-y;
     }
 
     #canvas-wrapper {
@@ -121,6 +126,51 @@
 
     canvas#frameCanvas.enhanced-quality {
       filter: contrast(1.05) saturate(1.08) brightness(1.01);
+    }
+
+    /* Subtle Smartphone Gesture Hint (Disappears immediately on interaction) */
+    #mobile-swipe-hint {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.82;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      animation: bounceSwipe 2s infinite ease-in-out;
+    }
+
+    @keyframes bounceSwipe {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -6px); }
+    }
+
+    #mobile-swipe-hint.hidden {
+      opacity: 0;
+      transform: translate(-50%, 16px);
+      pointer-events: none;
+    }
+
+    #mobile-swipe-hint svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--accent-gold);
+    }
+
+    @media (min-width: 769px) {
+      #mobile-swipe-hint {
+        display: none !important;
+      }
     }
 
     /* Content Wrapper Flowing Directly Underneath */
@@ -203,6 +253,14 @@
     <div id="stage-container" title="Click or Space to Pause/Resume Rotation • Scroll down for details">
       <div id="canvas-wrapper">
         <canvas id="frameCanvas" class="enhanced-quality"></canvas>
+      </div>
+
+      <!-- Smartphone Touch Hint (Auto-hides on tap or scroll) -->
+      <div id="mobile-swipe-hint">
+        <span>Swipe up or tap to start</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
       </div>
     </div>
   </section>
@@ -1140,10 +1198,10 @@
       let screenHeight = window.innerHeight;
       let dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-      // Responsive HiDPI Canvas Resize
+      // Responsive HiDPI Canvas Resize (Mobile Viewport Optimized)
       function resizeCanvas() {
-        screenWidth = window.innerWidth;
-        screenHeight = window.innerHeight;
+        screenWidth = (window.visualViewport && window.visualViewport.width) ? window.visualViewport.width : window.innerWidth;
+        screenHeight = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
 
         canvas.width = Math.round(screenWidth * dpr);
@@ -1155,6 +1213,9 @@
       }
 
       window.addEventListener('resize', resizeCanvas, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', resizeCanvas, { passive: true });
+      }
       resizeCanvas();
 
       // Prioritized Asset Preloading Engine (Immediate fluid start)
@@ -1264,13 +1325,20 @@
         }
       }
 
+      // Mobile Hint Helper
+      function hideMobileHint() {
+        const hint = document.getElementById('mobile-swipe-hint');
+        if (hint) hint.classList.add('hidden');
+      }
+
       // ==========================================
-      // Mode 1: First Swipe -> 6s Full Story Animation -> 100% Lag-Free Smooth Jump to 2nd Page
+      // Mode 1: First Swipe / Tap -> 6s Full Story Animation -> 100% Lag-Free Smooth Jump to 2nd Page
       // Mode 2: "Athu kazhinjal ippo ulla pole manual control" (Full Manual Control Thereafter)
       // ==========================================
       function playIntroAndAdvance() {
         if (state.isAutoPlayingIntro || state.introCompleted || state.isTransitioningToContent) return;
         state.isAutoPlayingIntro = true;
+        hideMobileHint();
 
         const duration = 6000; // Exact 6.0 seconds
         const startTime = performance.now();
@@ -1311,7 +1379,7 @@
         requestAnimationFrame(stepIntro);
       }
 
-      // Buttery Smooth Cushioned Slide to 2nd Page (Zero lag, zero tearing, zero jitter)
+      // Buttery Smooth Cushioned Slide to 2nd Page (Zero lag, zero tearing, mobile header offset aware)
       function smoothJumpToProducts() {
         state.isTransitioningToContent = true;
         const nextSection = document.getElementById('products');
@@ -1322,7 +1390,8 @@
         }
 
         const startY = window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = nextSection.getBoundingClientRect().top + startY;
+        const headerH = (siteHeader && siteHeader.offsetHeight) ? siteHeader.offsetHeight : 60;
+        const targetY = Math.max(0, nextSection.getBoundingClientRect().top + startY - headerH + 8);
         const slideDuration = 520; // 520ms silky smooth cushioned glide
         const slideStart = performance.now();
 
@@ -1346,8 +1415,9 @@
         requestAnimationFrame(stepSlide);
       }
 
-      // Gesture Detectors for First Swipe / Scroll (Initial Visit Only)
+      // Gesture Detectors for First Swipe / Scroll / Tap (Initial Visit Only)
       let touchStartY = 0;
+      let touchStartX = 0;
 
       window.addEventListener('wheel', (e) => {
         if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
@@ -1365,14 +1435,15 @@
 
       window.addEventListener('touchstart', (e) => {
         touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
       }, { passive: true });
 
       window.addEventListener('touchmove', (e) => {
         if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
           if (scrollTop <= 60) {
-            const diff = touchStartY - e.touches[0].clientY;
-            if (diff > 12) { // Small swipe up / scroll down
+            const diffY = touchStartY - e.touches[0].clientY;
+            if (diffY > 8) { // Small swipe up / scroll down
               if (e.cancelable) e.preventDefault();
               playIntroAndAdvance();
               return;
@@ -1383,6 +1454,20 @@
           if (e.cancelable) e.preventDefault();
         }
       }, { passive: false });
+
+      window.addEventListener('touchend', (e) => {
+        if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          if (scrollTop <= 60 && e.changedTouches && e.changedTouches[0]) {
+            const diffY = Math.abs(touchStartY - e.changedTouches[0].clientY);
+            const diffX = Math.abs(touchStartX - e.changedTouches[0].clientX);
+            if (diffY < 16 && diffX < 16) {
+              // Direct clean tap to start on smartphone
+              playIntroAndAdvance();
+            }
+          }
+        }
+      }, { passive: true });
 
       const stageContainer = document.getElementById('stage-container');
       if (stageContainer) {
@@ -1400,12 +1485,16 @@
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const windowH = window.innerHeight || 800;
 
+        if (scrollTop > 20) {
+          hideMobileHint();
+        }
+
         if (state.introCompleted) {
           state.targetFraction = Math.max(0, Math.min(1, scrollTop / windowH));
         }
 
         // Header visibility: reveal smoothly once user scrolls down towards products
-        if (scrollTop > windowH * 0.4) {
+        if (scrollTop > windowH * 0.3) {
           siteHeader.classList.add('nav-visible');
         } else {
           siteHeader.classList.remove('nav-visible');
@@ -1470,14 +1559,18 @@
         }
       }
 
-      // Automatic Fullscreen Trigger on First User Gesture
-      ['click', 'wheel', 'touchstart', 'keydown'].forEach(evt => {
-        window.addEventListener(evt, () => {
-          if (!document.fullscreenElement) {
-            toggleFullscreen();
-          }
-        }, { once: true, passive: true });
-      });
+      // Automatic Fullscreen Trigger on First User Gesture (Desktop Only - Mobile stays native)
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+      if (!isMobileDevice) {
+        ['click', 'wheel', 'touchstart', 'keydown'].forEach(evt => {
+          window.addEventListener(evt, () => {
+            if (!document.fullscreenElement) {
+              toggleFullscreen();
+            }
+          }, { once: true, passive: true });
+        });
+      }
 
       // Mobile Drawer
       if (mobileToggle && mobileDrawer) {

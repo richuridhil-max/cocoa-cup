@@ -657,21 +657,25 @@ footer.site-footer {
 #hero-scroll-section {
   position: relative;
   width: 100%;
-  height: 500vh; /* Smooth, luxurious scrubbing distance */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #0c0907;
 }
 
 #stage-container {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
+  position: relative;
+  width: 100vw;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #0c0907;
   z-index: 10;
+  user-select: none;
+  touch-action: pan-y;
 }
 
 header.site-header {
@@ -1803,4 +1807,482 @@ table.specs-table td strong {
   width: 32px;
   height: 32px;
   fill: currentColor;
+}
+
+/* ==========================================================================
+   SMARTPHONE & RESPONSIVE MASTER DESIGN SYSTEM (Mobile Optimized)
+   Tested for iOS Safari (iPhone SE to 16 Pro Max), Android Chrome, Foldables
+   ========================================================================== */
+
+/* Tablet & Mobile Landscape (<= 992px) */
+@media (max-width: 992px) {
+  :root {
+    --container-max: 100%;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .mobile-toggle {
+    display: flex !important;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 24px;
+  }
+
+  .tiers-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .calc-output-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .step-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .step-visual-box {
+    order: -1;
+    height: 160px;
+  }
+
+  .cycle-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .projections-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .farmer-spotlight-box {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 32px 24px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .summary-card {
+    position: static;
+  }
+}
+
+/* Smartphone Portrait & Narrow Screens (<= 768px) */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .section-pad {
+    padding: 56px 0;
+  }
+
+  .section-title {
+    font-size: clamp(24px, 6.2vw, 32px);
+    line-height: 1.22;
+  }
+
+  .hero-pill-badge {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+
+  /* Header on Mobile */
+  header.site-header {
+    padding: 10px 0;
+  }
+
+  .brand-emblem {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .brand-emblem svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .brand-name {
+    font-size: 16px;
+  }
+
+  .brand-tagline {
+    font-size: 9.5px;
+  }
+
+  .btn-sample {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 999px;
+  }
+
+  .btn-sample span {
+    display: inline;
+  }
+
+  .mobile-drawer {
+    top: 56px;
+    padding: 20px 16px;
+    gap: 12px;
+    max-height: calc(100dvh - 56px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-drawer .nav-link {
+    font-size: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: block;
+  }
+
+  /* Products & Metrics */
+  .metrics-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .metric-pill {
+    padding: 14px 10px;
+    border-radius: 14px;
+  }
+
+  .metric-val {
+    font-size: 22px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .product-card {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+
+  .product-visual {
+    height: 170px;
+    margin-bottom: 18px;
+  }
+
+  .cup-render {
+    width: 120px;
+    height: 140px;
+  }
+
+  .product-title {
+    font-size: 22px;
+  }
+
+  .product-vol {
+    font-size: 12px;
+  }
+
+  .price-num {
+    font-size: 24px;
+  }
+
+  /* Interactive Calculator */
+  .calculator-box {
+    padding: 22px 16px;
+    border-radius: 20px;
+    margin-top: 32px;
+  }
+
+  .calc-stat-val {
+    font-size: 20px;
+  }
+
+  .calc-stat-label {
+    font-size: 10px;
+  }
+
+  .calc-slider {
+    height: 10px;
+  }
+
+  .calc-slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Timeline / Process Section */
+  .timeline-container {
+    margin-top: 32px;
+  }
+
+  .timeline-container::before {
+    left: 17px;
+  }
+
+  .step-item {
+    padding-left: 48px;
+    margin-bottom: 24px;
+  }
+
+  .step-node {
+    left: 0;
+    top: 14px;
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+
+  .step-card {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .step-title {
+    font-size: 19px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .step-parameters {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .param-box {
+    padding: 8px 10px;
+  }
+
+  .param-val {
+    font-size: 13px;
+  }
+
+  .param-label {
+    font-size: 9.5px;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .comparison-card {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  /* Story & Kerala Impact */
+  .story-hero-quote {
+    font-size: clamp(16px, 4.5vw, 22px);
+    margin-bottom: 24px;
+    line-height: 1.45;
+  }
+
+  .problem-solution-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .crisis-card, .solution-card {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .card-heading {
+    font-size: 20px;
+  }
+
+  .card-body-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .circular-system-box {
+    padding: 22px 16px;
+    border-radius: 20px;
+    margin-top: 32px;
+  }
+
+  .cycle-steps {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .cycle-node {
+    padding: 14px 10px;
+    border-radius: 14px;
+  }
+
+  .cycle-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
+  }
+
+  .cycle-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .cycle-name {
+    font-size: 12.5px;
+  }
+
+  .cycle-desc {
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .farmer-stat-num {
+    font-size: 38px;
+  }
+
+  /* Contact & Form Section */
+  .form-card {
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    font-size: 12.5px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px !important; /* Critical for iOS: prevents auto zoom-in on focus */
+    padding: 12px 14px;
+    border-radius: 10px;
+    min-height: 48px;
+  }
+
+  .custom-check-pill {
+    padding: 9px 13px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+
+  .summary-card {
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .summary-total-val {
+    font-size: 26px;
+  }
+
+  .hub-badge {
+    font-size: 11.5px;
+    padding: 10px 12px;
+  }
+
+  /* FAQ & Modal */
+  .faq-trigger {
+    padding: 16px 18px;
+    font-size: 14.5px;
+  }
+
+  .faq-content {
+    padding: 0 18px 18px;
+    font-size: 13px;
+  }
+
+  .modal-box {
+    padding: 26px 18px;
+    border-radius: 20px;
+    width: 94%;
+    max-width: 380px;
+  }
+
+  /* Full-width touch-friendly buttons */
+  .product-card .btn-secondary,
+  .tier-card .btn-primary,
+  .form-card .btn-primary {
+    width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}
+
+/* Extra Compact Phones (<= 480px, e.g. iPhone SE, compact Androids) */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 14px;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .btn-sample {
+    display: none;
+  }
+
+  .tiers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-output-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .calc-stat-card {
+    padding: 12px 8px;
+  }
+
+  .calc-stat-val {
+    font-size: 18px;
+  }
+
+  .cycle-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom-links {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
