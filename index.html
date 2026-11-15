@@ -1281,7 +1281,7 @@
 
       startLoadingEngine();
 
-      // Frame Rendering Engine: 100% Crisp, Ultra-Sharp Photographic Framing
+      // Frame Rendering Engine: 100% Crisp, Pure Single-Frame Fullscreen Render
       function renderFrame(fraction) {
         const clampedFraction = Math.max(0, Math.min(1, fraction));
         const exactFrame = clampedFraction * (TOTAL_FRAMES - 1) + 1;
@@ -1298,65 +1298,15 @@
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        const isPortrait = screenW < screenH;
+        // Pure Single-Frame Fullscreen Cinematic Cover (100% Clean Stage, Zero Split/Duplicate)
+        const scale = Math.max(screenW / imgW, screenH / imgH);
+        const drawW = Math.round(imgW * scale);
+        const drawH = Math.round(imgH * scale);
+        const drawX = Math.round((screenW - drawW) / 2);
+        const drawY = Math.round((screenH - drawH) / 2);
 
-        if (isPortrait) {
-          // ========================================================
-          // SMARTPHONE PORTRAIT: 100% SIDES VISIBLE & CRYSTAL CLEAR
-          // ========================================================
-
-          // Pass 1: Atmospheric Ambient Background (Warm studio lighting floods entire phone height)
-          const bgScale = Math.max(screenW / imgW, screenH / imgH);
-          const bgW = Math.round(imgW * bgScale);
-          const bgH = Math.round(imgH * bgScale);
-          const bgX = Math.round((screenW - bgW) / 2);
-          const bgY = Math.round((screenH - bgH) / 2);
-
-          ctx.globalAlpha = 0.38;
-          ctx.drawImage(imgA, bgX, bgY, bgW, bgH);
-
-          // Deep luxury backdrop wash for high-contrast focus
-          ctx.fillStyle = 'rgba(12, 9, 7, 0.62)';
-          ctx.fillRect(0, 0, screenW, screenH);
-          ctx.globalAlpha = 1.0;
-
-          // Pass 2: Main 100% Crisp 16:9 Subject (100% FULL SIDES VISIBLE, ZERO CROPPING)
-          // The cocoa pod, exploding beans on the sides, and cup are completely in frame, edge-to-edge!
-          const fgScale = screenW / imgW;
-          const fgW = screenW;
-          const fgH = Math.round(imgH * fgScale);
-          const fgX = 0;
-          const fgY = Math.round((screenH - fgH) / 2);
-
-          ctx.drawImage(imgA, fgX, fgY, fgW, fgH);
-
-          // Subtle organic top & bottom edge blend into the ambient background
-          const featherH = Math.round(fgH * 0.10);
-          const topGrad = ctx.createLinearGradient(0, fgY, 0, fgY + featherH);
-          topGrad.addColorStop(0, 'rgba(12, 9, 7, 0.65)');
-          topGrad.addColorStop(1, 'rgba(12, 9, 7, 0)');
-          ctx.fillStyle = topGrad;
-          ctx.fillRect(0, fgY, screenW, featherH);
-
-          const btmGrad = ctx.createLinearGradient(0, fgY + fgH - featherH, 0, fgY + fgH);
-          btmGrad.addColorStop(0, 'rgba(12, 9, 7, 0)');
-          btmGrad.addColorStop(1, 'rgba(12, 9, 7, 0.65)');
-          ctx.fillStyle = btmGrad;
-          ctx.fillRect(0, fgY + fgH - featherH, screenW, featherH);
-
-        } else {
-          // ========================================================
-          // DESKTOP & LANDSCAPE: Full Stage Cover
-          // ========================================================
-          const scale = Math.max(screenW / imgW, screenH / imgH);
-          const drawW = Math.round(imgW * scale);
-          const drawH = Math.round(imgH * scale);
-          const drawX = Math.round((screenW - drawW) / 2);
-          const drawY = Math.round((screenH - drawH) / 2);
-
-          ctx.globalAlpha = 1.0;
-          ctx.drawImage(imgA, drawX, drawY, drawW, drawH);
-        }
+        ctx.globalAlpha = 1.0;
+        ctx.drawImage(imgA, drawX, drawY, drawW, drawH);
       }
 
       // Mobile Hint Helper
