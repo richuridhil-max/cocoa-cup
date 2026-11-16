@@ -652,56 +652,80 @@ footer.site-footer {
 }
 
 /* ==========================================================================
-   HERO SCROLL STAGE - Mobile: 250vh sticky manual scrub | Laptop: 100vh cinematic auto-intro
+   HERO SCROLL STAGE - Laptop Default: 100vh stage | Mobile: 250vh sticky manual scrub
    ========================================================================== */
-@media (max-width: 768px) {
-  #hero-scroll-section {
-    position: relative;
-    width: 100%;
-    height: 250vh;
-    height: 250dvh;
-    background: #0c0907;
-  }
-
-  #stage-container {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0c0907;
-    z-index: 10;
-    user-select: none;
-    touch-action: pan-y;
-  }
+#hero-scroll-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #0c0907;
+  overscroll-behavior-y: none;
 }
 
-@media (min-width: 769px) {
-  #hero-scroll-section {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    background: #0c0907;
-    overscroll-behavior-y: none;
-  }
+#stage-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c0907;
+  user-select: none;
+}
 
-  #stage-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0c0907;
-    user-select: none;
-  }
+/* Mobile Phone Override */
+body.is-mobile-device #hero-scroll-section {
+  position: relative;
+  width: 100%;
+  height: 250vh;
+  height: 250dvh;
+  overflow: visible;
+  background: #0c0907;
+  overscroll-behavior-y: auto;
+}
+
+body.is-mobile-device #stage-container {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c0907;
+  z-index: 10;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+body.is-desktop-device #hero-scroll-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #0c0907;
+  overscroll-behavior-y: none;
+}
+
+body.is-desktop-device #stage-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c0907;
+  user-select: none;
 }
 
 header.site-header {
