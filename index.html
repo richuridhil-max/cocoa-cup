@@ -1568,6 +1568,17 @@
             }
           });
         }
+
+        // Silent automatic fullscreen on first desktop interaction (first click anywhere or keypress)
+        ['click', 'pointerdown', 'keydown'].forEach(evt => {
+          window.addEventListener(evt, () => {
+            if (!document.fullscreenElement) {
+              const el = document.documentElement;
+              const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+              if (rfs) rfs.call(el).catch(() => {});
+            }
+          }, { once: true, passive: true });
+        });
       }
 
       // Mobile Drawer
