@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
   <style>
     html {
       scroll-behavior: smooth;
@@ -221,6 +222,58 @@
       }
     }
 
+    /* Desktop Luxury Floating Fullscreen Trigger */
+    #desktop-fullscreen-badge {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      z-index: 120;
+      display: none;
+    }
+
+    body.is-desktop-device #desktop-fullscreen-badge {
+      display: block;
+    }
+
+    #hero-fullscreen-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(18, 14, 11, 0.78);
+      border: 1px solid rgba(229, 179, 106, 0.45);
+      color: var(--accent-gold);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    #hero-fullscreen-btn:hover {
+      background: var(--accent-gold);
+      color: #0c0907;
+      border-color: var(--accent-gold);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 28px rgba(229, 179, 106, 0.4);
+    }
+
+    #hero-fullscreen-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+    }
+
+    @media (max-width: 768px) {
+      #desktop-fullscreen-badge {
+        display: none !important;
+      }
+    }
+
     /* Content Wrapper Flowing Directly Underneath */
     .page-content-wrapper {
       position: relative;
@@ -301,6 +354,16 @@
     <div id="stage-container" title="Click or Space to Pause/Resume Rotation • Scroll down for details">
       <div id="canvas-wrapper">
         <canvas id="frameCanvas" class="enhanced-quality"></canvas>
+      </div>
+
+      <!-- Desktop Luxury Fullscreen Trigger (Auto-activates or 1-click toggle) -->
+      <div id="desktop-fullscreen-badge">
+        <button id="hero-fullscreen-btn" title="Toggle Fullscreen Mode (Press F)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+          <span id="fullscreen-btn-text">Fullscreen ⛶</span>
+        </button>
       </div>
 
       <!-- Smartphone Touch Hint (Auto-hides on scroll) -->
@@ -1637,20 +1700,54 @@
         });
       }
 
-      // Fullscreen Controller
+      // Fullscreen Controller & Immediate Auto-Fullscreen Engine
+      const fsBtn = document.getElementById('hero-fullscreen-btn');
+      const fsText = document.getElementById('fullscreen-btn-text');
+
       function toggleFullscreen() {
         if (!document.fullscreenElement) {
           const el = document.documentElement;
           const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-          if (rfs) rfs.call(el).catch(() => {});
+          if (rfs) {
+            rfs.call(el).catch(() => {});
+          }
         } else {
           const efs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-          if (efs) efs.call(document).catch(() => {});
+          if (efs) {
+            efs.call(document).catch(() => {});
+          }
         }
       }
 
-      // Automatic Fullscreen Trigger on First User Gesture (Desktop Only - Mobile stays native)
+      function updateFullscreenUI() {
+        if (!fsText) return;
+        if (document.fullscreenElement) {
+          fsText.textContent = 'Exit Fullscreen';
+          if (fsBtn) fsBtn.style.opacity = '0.7';
+        } else {
+          fsText.textContent = 'Fullscreen ⛶';
+          if (fsBtn) fsBtn.style.opacity = '1';
+        }
+      }
+
+      document.addEventListener('fullscreenchange', updateFullscreenUI);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+
+      if (fsBtn) {
+        fsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleFullscreen();
+        });
+      }
+
+      // Instant Auto-Fullscreen Attempts (Page Start + Any First Gesture)
       if (!isMobileDevice) {
+        // Attempt immediate fullscreen on load
+        window.addEventListener('load', () => {
+          if (!document.fullscreenElement) toggleFullscreen();
+        });
+
+        // Trigger on any first interaction (click, pointer, key)
         ['click', 'pointerdown', 'keydown'].forEach(evt => {
           window.addEventListener(evt, () => {
             if (!document.fullscreenElement) {

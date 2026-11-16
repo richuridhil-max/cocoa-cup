@@ -14,9 +14,9 @@ try {
     $edgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
     if (Test-Path $chromePath) {
-        Start-Process $chromePath -ArgumentList "--start-fullscreen", "http://localhost:$port/"
+        Start-Process $chromePath -ArgumentList "--new-window", "--start-fullscreen", "http://localhost:$port/"
     } elseif (Test-Path $edgePath) {
-        Start-Process $edgePath -ArgumentList "--start-fullscreen", "http://localhost:$port/"
+        Start-Process $edgePath -ArgumentList "--new-window", "--start-fullscreen", "http://localhost:$port/"
     } else {
         Start-Process "http://localhost:$port/"
     }

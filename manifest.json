@@ -1,0 +1,9 @@
+{
+  "name": "COCOACUP — Kerala's Sustainable Tableware",
+  "short_name": "COCOACUP",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0c0907",
+  "theme_color": "#0c0907"
+}
