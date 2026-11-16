@@ -80,42 +80,16 @@
       fill: currentColor;
     }
 
-    /* Hero Section - Laptop Default: 100vh cinematic stage with auto 6s story & smooth jump */
+    /* Hero Section (Sticky 250vh Scrollytelling Stage for Butter-Smooth Manual Scrubbing & Cinematic Intro) */
     #hero-scroll-section {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      background: #0c0907;
-      overscroll-behavior-y: none;
-    }
-
-    #stage-container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0c0907;
-      user-select: none;
-    }
-
-    /* Mobile Phone: Sticky 250dvh stage for manual thumb scrubbing */
-    body.is-mobile-device #hero-scroll-section {
       position: relative;
       width: 100%;
       height: 250vh;
       height: 250dvh;
-      overflow: visible;
       background: #0c0907;
-      overscroll-behavior-y: auto;
     }
 
-    body.is-mobile-device #stage-container {
+    #stage-container {
       position: -webkit-sticky;
       position: sticky;
       top: 0;
@@ -130,29 +104,6 @@
       z-index: 10;
       user-select: none;
       touch-action: pan-y;
-    }
-
-    body.is-desktop-device #hero-scroll-section {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      background: #0c0907;
-      overscroll-behavior-y: none;
-    }
-
-    body.is-desktop-device #stage-container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0c0907;
-      user-select: none;
     }
 
     #canvas-wrapper {
@@ -1594,21 +1545,14 @@
           hideMobileHint();
         }
 
-        if (isMobileDevice) {
-          // Mobile Phone: Scrub across the 250dvh track with pure finger control
-          const heroRect = heroScrollSection.getBoundingClientRect();
-          const heroTop = heroRect.top + scrollTop;
-          const heroH = heroScrollSection.offsetHeight;
-          const scrollableDistance = heroH - windowH;
-          if (scrollableDistance > 0) {
-            const fraction = Math.max(0, Math.min(1, (scrollTop - heroTop) / scrollableDistance));
-            state.targetFraction = fraction;
-          }
-        } else {
-          // Laptop: After 6s intro has completed, manual wheel scrub is active
-          if (state.introCompleted) {
-            state.targetFraction = Math.max(0, Math.min(1, scrollTop / windowH));
-          }
+        // Manual 3D Animation Scrubbing across the 250dvh track (Works on BOTH Laptop & Mobile!)
+        const heroRect = heroScrollSection.getBoundingClientRect();
+        const heroTop = heroRect.top + scrollTop;
+        const heroH = heroScrollSection.offsetHeight;
+        const scrollableDistance = heroH - windowH;
+        if (scrollableDistance > 0) {
+          const fraction = Math.max(0, Math.min(1, (scrollTop - heroTop) / scrollableDistance));
+          state.targetFraction = fraction;
         }
 
         // Header visibility: reveal smoothly once user scrolls down towards products
