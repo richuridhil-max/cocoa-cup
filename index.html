@@ -79,30 +79,55 @@
       fill: currentColor;
     }
 
-    /* Hero Section (100% Full Clean Animation Stage) */
-    #hero-scroll-section {
-      position: relative;
-      width: 100%;
-      height: 250vh;
-      height: 250dvh;
-      background: #0c0907;
+    /* Hero Section - Mobile: 250vh sticky manual scrub | Laptop: 100vh cinematic auto-intro stage */
+    @media (max-width: 768px) {
+      #hero-scroll-section {
+        position: relative;
+        width: 100%;
+        height: 250vh;
+        height: 250dvh;
+        background: #0c0907;
+      }
+
+      #stage-container {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0c0907;
+        z-index: 10;
+        user-select: none;
+        touch-action: pan-y;
+      }
     }
 
-    #stage-container {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0c0907;
-      z-index: 10;
-      user-select: none;
-      touch-action: pan-y;
+    @media (min-width: 769px) {
+      #hero-scroll-section {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        background: #0c0907;
+        overscroll-behavior-y: none;
+      }
+
+      #stage-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0c0907;
+        user-select: none;
+      }
     }
 
     #canvas-wrapper {
@@ -1164,15 +1189,20 @@
 
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-      // State Management: 100% Pure Silky Smooth Manual Finger & Wheel Control
+      // State Management: Mobile = Pure Finger Scrubbing | Laptop = Cinematic Auto 6s Intro + Smooth Jump
       const state = {
         loadedCount: 0,
         images: new Array(TOTAL_FRAMES + 1),
         isReady: false,
         
+        // Laptop Cinematic Intro State
+        isAutoPlayingIntro: false,
+        isTransitioningToContent: false,
+        introCompleted: isMobileDevice || (window.pageYOffset || document.documentElement.scrollTop) > 100,
+        
         targetFraction: 0,
         currentFraction: 0,
-        easeFactor: isMobileDevice ? 0.24 : 0.12, // Ultra-responsive direct finger scrubbing
+        easeFactor: isMobileDevice ? 0.24 : 0.08, // Mobile: responsive finger tracking | Laptop: silky inertia
         
         // Display & Optical Engine
         subframeBlend: false,
@@ -1370,22 +1400,119 @@
         if (hint) hint.classList.add('hidden');
       }
 
-      // 100% Native Manual Scroll Monitor (Direct Tactile Finger & Wheel Control)
-      function onWindowScroll() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const heroRect = heroScrollSection.getBoundingClientRect();
-        const heroTop = heroRect.top + scrollTop;
-        const heroH = heroScrollSection.offsetHeight;
-        const windowH = window.innerHeight || 800;
+      // Laptop-Only: 6.0s Cinematic Auto Intro Sequence with 0ms Cushioned Jump to Products
+      function playIntroAndAdvance() {
+        if (isMobileDevice || state.isAutoPlayingIntro || state.introCompleted || state.isTransitioningToContent) return;
+        state.isAutoPlayingIntro = true;
+        hideMobileHint();
 
-        const scrollableDistance = heroH - windowH;
-        if (scrollableDistance > 0) {
-          const fraction = Math.max(0, Math.min(1, (scrollTop - heroTop) / scrollableDistance));
-          state.targetFraction = fraction;
+        // Lock scroll during 6s auto animation on desktop so user enjoys the full story
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+
+        const duration = 6000; // Exact 6.0 seconds
+        const startTime = performance.now();
+        const startFraction = state.currentFraction;
+        const targetFraction = 1.0;
+        let hasJumped = false;
+
+        function stepIntro(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(1, elapsed / duration);
+
+          // Fluid sinusoidal ease-in-out curve
+          const ease = 0.5 * (1 - Math.cos(Math.PI * progress));
+
+          state.currentFraction = startFraction + (targetFraction - startFraction) * ease;
+          state.targetFraction = state.currentFraction;
+          renderFrame(state.currentFraction);
+
+          // The EXACT INSTANT the cup finishes filling with hot chocolate:
+          // Immediately initiate the silky-smooth jump with ZERO lag & zero pause!
+          if (!hasJumped && progress >= 1.0) {
+            hasJumped = true;
+            state.currentFraction = 1.0;
+            state.targetFraction = 1.0;
+            renderFrame(1.0);
+            state.isAutoPlayingIntro = false;
+
+            smoothJumpToProducts();
+            return;
+          }
+
+          if (progress < 1 && !hasJumped) {
+            requestAnimationFrame(stepIntro);
+          }
         }
+
+        requestAnimationFrame(stepIntro);
+      }
+
+      // Buttery Smooth Cushioned Slide to 2nd Page (Zero lag, zero tearing, laptop header offset aware)
+      function smoothJumpToProducts() {
+        state.isTransitioningToContent = true;
+
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+
+        const nextSection = document.getElementById('products');
+        if (!nextSection) {
+          state.isTransitioningToContent = false;
+          state.introCompleted = true;
+          return;
+        }
+
+        const startY = window.pageYOffset || document.documentElement.scrollTop;
+        const headerH = (siteHeader && siteHeader.offsetHeight) ? siteHeader.offsetHeight : 60;
+        const targetY = Math.max(0, nextSection.getBoundingClientRect().top + startY - headerH + 8);
+        const slideDuration = 520; // 520ms silky smooth cushioned glide
+        const slideStart = performance.now();
+
+        function stepSlide(now) {
+          const elapsed = now - slideStart;
+          const p = Math.min(1, elapsed / slideDuration);
+          const ease = 0.5 * (1 - Math.cos(Math.PI * p));
+          window.scrollTo(0, startY + (targetY - startY) * ease);
+
+          if (p < 1) {
+            requestAnimationFrame(stepSlide);
+          } else {
+            window.scrollTo(0, targetY);
+            state.isTransitioningToContent = false;
+            state.introCompleted = true; // Manual control is now permanently active
+            onWindowScroll();
+          }
+        }
+
+        requestAnimationFrame(stepSlide);
+      }
+
+      // Unified Scroll Monitor (Mobile: 250dvh sticky scrub | Laptop: intro completion & manual scrub)
+      function onWindowScroll() {
+        if (state.isAutoPlayingIntro || state.isTransitioningToContent) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowH = window.innerHeight || 800;
 
         if (scrollTop > 20) {
           hideMobileHint();
+        }
+
+        if (isMobileDevice) {
+          // Mobile Phone: Scrub across the 250dvh track with pure finger control
+          const heroRect = heroScrollSection.getBoundingClientRect();
+          const heroTop = heroRect.top + scrollTop;
+          const heroH = heroScrollSection.offsetHeight;
+          const scrollableDistance = heroH - windowH;
+          if (scrollableDistance > 0) {
+            const fraction = Math.max(0, Math.min(1, (scrollTop - heroTop) / scrollableDistance));
+            state.targetFraction = fraction;
+          }
+        } else {
+          // Laptop: After 6s intro has completed, manual wheel scrub is active
+          if (state.introCompleted) {
+            state.targetFraction = Math.max(0, Math.min(1, scrollTop / windowH));
+          }
         }
 
         // Header visibility: reveal smoothly once user scrolls down towards products
@@ -1399,18 +1526,20 @@
       window.addEventListener('scroll', onWindowScroll, { passive: true });
       onWindowScroll();
 
-      // Continuous Physics Render Loop (Silky 60fps / 120fps direct finger scrubbing)
+      // Continuous Physics Render Loop (Silky 60fps / 120fps direct finger scrubbing & inertia)
       function updatePhysicsAndRender() {
-        const diff = state.targetFraction - state.currentFraction;
-        if (Math.abs(diff) > 0.0001) {
-          state.currentFraction += diff * state.easeFactor;
-          if (state.isReady) {
-            renderFrame(state.currentFraction);
-          }
-        } else if (state.currentFraction !== state.targetFraction) {
-          state.currentFraction = state.targetFraction;
-          if (state.isReady) {
-            renderFrame(state.currentFraction);
+        if (!state.isAutoPlayingIntro && !state.isTransitioningToContent && (state.introCompleted || isMobileDevice)) {
+          const diff = state.targetFraction - state.currentFraction;
+          if (Math.abs(diff) > 0.0001) {
+            state.currentFraction += diff * state.easeFactor;
+            if (state.isReady) {
+              renderFrame(state.currentFraction);
+            }
+          } else if (state.currentFraction !== state.targetFraction) {
+            state.currentFraction = state.targetFraction;
+            if (state.isReady) {
+              renderFrame(state.currentFraction);
+            }
           }
         }
 
@@ -1419,12 +1548,60 @@
 
       requestAnimationFrame(updatePhysicsAndRender);
 
-      // Keyboard Controls (KeyF for Fullscreen)
-      window.addEventListener('keydown', (e) => {
-        if (e.code === 'KeyF') {
-          toggleFullscreen();
+      // Laptop-Specific Event Listeners (First Scroll / Down Arrow / Click triggers 6s Cinematic Intro)
+      if (!isMobileDevice) {
+        window.addEventListener('wheel', (e) => {
+          if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop <= 60 && e.deltaY > 0) {
+              if (e.cancelable) e.preventDefault();
+              playIntroAndAdvance();
+              return;
+            }
+          }
+          if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
+            if (e.cancelable) e.preventDefault();
+          }
+        }, { passive: false });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.code === 'KeyF') {
+            toggleFullscreen();
+            return;
+          }
+
+          if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop <= 60 && (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space')) {
+              e.preventDefault();
+              playIntroAndAdvance();
+              return;
+            }
+          }
+
+          if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
+            if (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space') {
+              e.preventDefault();
+            }
+          }
+        });
+
+        const stageContainer = document.getElementById('stage-container');
+        if (stageContainer) {
+          stageContainer.addEventListener('click', () => {
+            if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
+              playIntroAndAdvance();
+            }
+          });
         }
-      });
+      } else {
+        // Mobile keyboard (if external keyboard attached)
+        window.addEventListener('keydown', (e) => {
+          if (e.code === 'KeyF') {
+            toggleFullscreen();
+          }
+        });
+      }
 
       // Fullscreen Controller
       function toggleFullscreen() {
