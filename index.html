@@ -122,7 +122,7 @@
     }
 
     canvas#frameCanvas.enhanced-quality {
-      filter: contrast(1.08) saturate(1.10) brightness(1.02);
+      /* Zero CSS filter to ensure iOS Safari renders at 100% native unscaled Retina 3x sharpness */
     }
 
     /* Subtle Smartphone Gesture Hint (Disappears immediately on interaction) */
@@ -1329,12 +1329,30 @@
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Pure Single-Frame Fullscreen Cinematic Cover (100% Clean Stage, Zero Split/Duplicate)
-        const scale = Math.max(screenW / imgW, screenH / imgH);
-        const drawW = Math.round(imgW * scale);
-        const drawH = Math.round(imgH * scale);
-        const drawX = Math.round((screenW - drawW) / 2);
-        const drawY = Math.round((screenH - drawH) / 2);
+        // Clear background with deep luxury dark cocoa
+        ctx.fillStyle = '#0c0907';
+        ctx.fillRect(0, 0, screenW, screenH);
+
+        const isPortrait = screenW < screenH;
+        let drawW, drawH, drawX, drawY;
+
+        if (isPortrait) {
+          // Pure Original 16:9 Aspect Ratio on Smartphone (100% Ultra-HD & Fully In Frame)
+          // Preserves exact 16:9 proportion across the full width of the mobile screen!
+          // Zero crop, zero ratio distortion, maximum photographic clarity!
+          const scale = screenW / imgW;
+          drawW = screenW;
+          drawH = Math.round(imgH * scale);
+          drawX = 0;
+          drawY = Math.round((screenH - drawH) / 2);
+        } else {
+          // Desktop & Landscape: Full Screen Cover
+          const scale = Math.max(screenW / imgW, screenH / imgH);
+          drawW = Math.round(imgW * scale);
+          drawH = Math.round(imgH * scale);
+          drawX = Math.round((screenW - drawW) / 2);
+          drawY = Math.round((screenH - drawH) / 2);
+        }
 
         ctx.globalAlpha = 1.0;
         ctx.drawImage(imgA, drawX, drawY, drawW, drawH);
