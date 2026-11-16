@@ -307,13 +307,16 @@
         <canvas id="frameCanvas" class="enhanced-quality"></canvas>
       </div>
 
-      <!-- Desktop Luxury Fullscreen Trigger (Auto-activates or 1-click toggle) -->
+      <!-- Desktop Luxury Fullscreen Trigger (Exit Fullscreen button on laptop) -->
       <div id="desktop-fullscreen-badge">
-        <button id="hero-fullscreen-btn" title="Toggle Fullscreen Mode (Press F)">
+        <button id="hero-fullscreen-btn" title="Exit Fullscreen Mode (Press F or Esc)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="14" y1="10" x2="21" y2="3"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
           </svg>
-          <span id="fullscreen-btn-text">Fullscreen ⛶</span>
+          <span id="fullscreen-btn-text">Exit Fullscreen ⛶</span>
         </button>
       </div>
 
@@ -1665,13 +1668,7 @@
 
       function updateFullscreenUI() {
         if (!fsText) return;
-        if (document.fullscreenElement) {
-          fsText.textContent = 'Exit Fullscreen';
-          if (fsBtn) fsBtn.style.opacity = '0.7';
-        } else {
-          fsText.textContent = 'Fullscreen ⛶';
-          if (fsBtn) fsBtn.style.opacity = '1';
-        }
+        fsText.textContent = 'Exit Fullscreen ⛶';
       }
 
       document.addEventListener('fullscreenchange', updateFullscreenUI);
