@@ -20,6 +20,7 @@
       color: var(--accent-cream);
       font-family: var(--font-sans);
       overflow-x: hidden;
+      overflow-x: clip;
       margin: 0;
       padding: 0;
     }
@@ -82,15 +83,15 @@
     #hero-scroll-section {
       position: relative;
       width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
+      height: 250vh;
+      height: 250dvh;
       background: #0c0907;
-      overscroll-behavior-y: none;
     }
 
     #stage-container {
-      position: relative;
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
       width: 100vw;
       height: 100vh;
       height: 100dvh;
@@ -99,6 +100,7 @@
       align-items: center;
       justify-content: center;
       background: #0c0907;
+      z-index: 10;
       user-select: none;
       touch-action: pan-y;
     }
@@ -252,9 +254,9 @@
         <canvas id="frameCanvas" class="enhanced-quality"></canvas>
       </div>
 
-      <!-- Smartphone Touch Hint (Auto-hides on tap or scroll) -->
+      <!-- Smartphone Touch Hint (Auto-hides on scroll) -->
       <div id="mobile-swipe-hint">
-        <span>Swipe up or tap to start</span>
+        <span>Scroll to explore</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>
         </svg>
@@ -1160,24 +1162,22 @@
       const TOTAL_FRAMES = 240;
       const FRAME_PATH = (idx) => `frames/ezgif-frame-${String(idx).padStart(3, '0')}.jpg`;
 
-      // State Management: Initial First-Swipe Auto 1x -> Permanent Manual Control
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+      // State Management: 100% Pure Silky Smooth Manual Finger & Wheel Control
       const state = {
         loadedCount: 0,
         images: new Array(TOTAL_FRAMES + 1),
         isReady: false,
         
-        // Intro & Manual Modes
-        isAutoPlayingIntro: false,
-        isTransitioningToContent: false,
-        introCompleted: (window.pageYOffset || document.documentElement.scrollTop) > 100,
         targetFraction: 0,
         currentFraction: 0,
-        easeFactor: 0.08,        // Butter-smooth silk inertia for manual mode
+        easeFactor: isMobileDevice ? 0.24 : 0.12, // Ultra-responsive direct finger scrubbing
         
         // Display & Optical Engine
-        subframeBlend: false,    // Off: Guarantees 100% razor-sharp frames with zero ghosting or blur
-        fitMode: 'cover',        // Cover default
-        enhancedQuality: true    // Clarity ON
+        subframeBlend: false,
+        fitMode: 'cover',
+        enhancedQuality: true
       };
 
       // DOM Elements Cache
@@ -1370,175 +1370,22 @@
         if (hint) hint.classList.add('hidden');
       }
 
-      // ==========================================
-      // Mode 1: First Swipe / Tap -> 6s Full Story Animation -> 100% Lag-Free Smooth Jump to 2nd Page
-      // Mode 2: "Athu kazhinjal ippo ulla pole manual control" (Full Manual Control Thereafter)
-      // ==========================================
-      function playIntroAndAdvance() {
-        if (state.isAutoPlayingIntro || state.introCompleted || state.isTransitioningToContent) return;
-        state.isAutoPlayingIntro = true;
-        hideMobileHint();
-
-        // Lock scroll during 6s auto animation so mobile finger swipe doesn't fling page down prematurely!
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-
-        const duration = 6000; // Exact 6.0 seconds
-        const startTime = performance.now();
-        const startFraction = state.currentFraction;
-        const targetFraction = 1.0;
-        let hasJumped = false;
-
-        function stepIntro(now) {
-          const elapsed = now - startTime;
-          const progress = Math.min(1, elapsed / duration);
-
-          // Fluid ease-in-out that stays lively throughout the 6s story
-          const ease = 0.5 * (1 - Math.cos(Math.PI * progress));
-
-          state.currentFraction = startFraction + (targetFraction - startFraction) * ease;
-          state.targetFraction = state.currentFraction;
-          renderFrame(state.currentFraction);
-
-          // The EXACT INSTANT the cup finishes filling with hot chocolate:
-          // Immediately initiate the silky-smooth jump with ZERO lag & zero pause!
-          if (!hasJumped && progress >= 1.0) {
-            hasJumped = true;
-            state.currentFraction = 1.0;
-            state.targetFraction = 1.0;
-            renderFrame(1.0);
-            state.isAutoPlayingIntro = false;
-
-            // Zero delay (0ms) - completely smooth cushioned slide to 2nd page
-            smoothJumpToProducts();
-            return;
-          }
-
-          if (progress < 1 && !hasJumped) {
-            requestAnimationFrame(stepIntro);
-          }
-        }
-
-        requestAnimationFrame(stepIntro);
-      }
-
-      // Buttery Smooth Cushioned Slide to 2nd Page (Zero lag, zero tearing, mobile header offset aware)
-      function smoothJumpToProducts() {
-        state.isTransitioningToContent = true;
-
-        // Unlock scroll for silky smooth slide and permanent manual control!
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-
-        const nextSection = document.getElementById('products');
-        if (!nextSection) {
-          state.isTransitioningToContent = false;
-          state.introCompleted = true;
-          return;
-        }
-
-        const startY = window.pageYOffset || document.documentElement.scrollTop;
-        const headerH = (siteHeader && siteHeader.offsetHeight) ? siteHeader.offsetHeight : 60;
-        const targetY = Math.max(0, nextSection.getBoundingClientRect().top + startY - headerH + 8);
-        const slideDuration = 520; // 520ms silky smooth cushioned glide
-        const slideStart = performance.now();
-
-        function stepSlide(now) {
-          const elapsed = now - slideStart;
-          const p = Math.min(1, elapsed / slideDuration);
-          // Pure sinusoidal curve for zero-jerk, zero-lag fluid motion
-          const ease = 0.5 * (1 - Math.cos(Math.PI * p));
-          window.scrollTo(0, startY + (targetY - startY) * ease);
-
-          if (p < 1) {
-            requestAnimationFrame(stepSlide);
-          } else {
-            window.scrollTo(0, targetY);
-            state.isTransitioningToContent = false;
-            state.introCompleted = true; // Manual control is now permanently active
-            onWindowScroll();
-          }
-        }
-
-        requestAnimationFrame(stepSlide);
-      }
-
-      // Gesture Detectors for First Swipe / Scroll / Tap (Initial Visit Only)
-      let touchStartY = 0;
-      let touchStartX = 0;
-
-      window.addEventListener('wheel', (e) => {
-        if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop <= 60 && e.deltaY > 0) {
-            if (e.cancelable) e.preventDefault();
-            playIntroAndAdvance();
-            return;
-          }
-        }
-        if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
-          if (e.cancelable) e.preventDefault();
-        }
-      }, { passive: false });
-
-      window.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-        touchStartX = e.touches[0].clientX;
-      }, { passive: true });
-
-      window.addEventListener('touchmove', (e) => {
-        if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop <= 60) {
-            const diffY = touchStartY - e.touches[0].clientY;
-            if (diffY > 8) { // Small swipe up / scroll down
-              if (e.cancelable) e.preventDefault();
-              playIntroAndAdvance();
-              return;
-            }
-          }
-        }
-        if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
-          if (e.cancelable) e.preventDefault();
-        }
-      }, { passive: false });
-
-      window.addEventListener('touchend', (e) => {
-        if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop <= 60 && e.changedTouches && e.changedTouches[0]) {
-            const diffY = Math.abs(touchStartY - e.changedTouches[0].clientY);
-            const diffX = Math.abs(touchStartX - e.changedTouches[0].clientX);
-            if (diffY < 16 && diffX < 16) {
-              // Direct clean tap to start on smartphone
-              playIntroAndAdvance();
-            }
-          }
-        }
-      }, { passive: true });
-
-      const stageContainer = document.getElementById('stage-container');
-      if (stageContainer) {
-        stageContainer.addEventListener('click', () => {
-          if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-            playIntroAndAdvance();
-          }
-        });
-      }
-
-      // Scroll Monitor: Active during manual control
+      // 100% Native Manual Scroll Monitor (Direct Tactile Finger & Wheel Control)
       function onWindowScroll() {
-        if (state.isAutoPlayingIntro || state.isTransitioningToContent) return;
-
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const heroRect = heroScrollSection.getBoundingClientRect();
+        const heroTop = heroRect.top + scrollTop;
+        const heroH = heroScrollSection.offsetHeight;
         const windowH = window.innerHeight || 800;
+
+        const scrollableDistance = heroH - windowH;
+        if (scrollableDistance > 0) {
+          const fraction = Math.max(0, Math.min(1, (scrollTop - heroTop) / scrollableDistance));
+          state.targetFraction = fraction;
+        }
 
         if (scrollTop > 20) {
           hideMobileHint();
-        }
-
-        if (state.introCompleted) {
-          state.targetFraction = Math.max(0, Math.min(1, scrollTop / windowH));
         }
 
         // Header visibility: reveal smoothly once user scrolls down towards products
@@ -1552,16 +1399,16 @@
       window.addEventListener('scroll', onWindowScroll, { passive: true });
       onWindowScroll();
 
-      // Continuous Physics Render Loop (Runs silky smooth manual control)
+      // Continuous Physics Render Loop (Silky 60fps / 120fps direct finger scrubbing)
       function updatePhysicsAndRender() {
-        if (!state.isAutoPlayingIntro && !state.isTransitioningToContent && state.introCompleted) {
-          const diff = state.targetFraction - state.currentFraction;
-          if (Math.abs(diff) > 0.00008) {
-            state.currentFraction += diff * state.easeFactor;
-          } else {
-            state.currentFraction = state.targetFraction;
+        const diff = state.targetFraction - state.currentFraction;
+        if (Math.abs(diff) > 0.0001) {
+          state.currentFraction += diff * state.easeFactor;
+          if (state.isReady) {
+            renderFrame(state.currentFraction);
           }
-
+        } else if (state.currentFraction !== state.targetFraction) {
+          state.currentFraction = state.targetFraction;
           if (state.isReady) {
             renderFrame(state.currentFraction);
           }
@@ -1572,26 +1419,10 @@
 
       requestAnimationFrame(updatePhysicsAndRender);
 
-      // Keyboard Controls (KeyF for Fullscreen, ArrowDown/Space for first swipe)
+      // Keyboard Controls (KeyF for Fullscreen)
       window.addEventListener('keydown', (e) => {
         if (e.code === 'KeyF') {
           toggleFullscreen();
-          return;
-        }
-
-        if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop <= 60 && (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space')) {
-            e.preventDefault();
-            playIntroAndAdvance();
-            return;
-          }
-        }
-
-        if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
-          if (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space') {
-            e.preventDefault();
-          }
         }
       });
 
@@ -1608,10 +1439,8 @@
       }
 
       // Automatic Fullscreen Trigger on First User Gesture (Desktop Only - Mobile stays native)
-      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-
       if (!isMobileDevice) {
-        ['click', 'wheel', 'touchstart', 'keydown'].forEach(evt => {
+        ['click', 'wheel', 'keydown'].forEach(evt => {
           window.addEventListener(evt, () => {
             if (!document.fullscreenElement) {
               toggleFullscreen();
