@@ -26,11 +26,11 @@
       padding: 0;
     }
 
-    /* Minimalist Instant Loading Curtain */
+    /* Minimalist Instant Loading Curtain & Cinema Gateway */
     #loading-curtain {
       position: fixed;
       inset: 0;
-      background: var(--bg-dark);
+      background: #0c0907;
       z-index: 250;
       display: flex;
       flex-direction: column;
@@ -38,6 +38,11 @@
       justify-content: center;
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
       user-select: none;
+      cursor: default;
+    }
+
+    #loading-curtain.ready-for-desktop-entry {
+      cursor: pointer;
     }
 
     #loading-curtain.loaded {
@@ -46,17 +51,28 @@
       pointer-events: none;
     }
 
+    .curtain-center-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      max-width: 90vw;
+    }
+
     .loader-emblem {
       position: relative;
-      width: 60px;
-      height: 60px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
     }
 
     .loader-ring {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 2px solid rgba(229, 179, 106, 0.15);
+      border: 2px solid rgba(229, 179, 106, 0.18);
       border-top-color: var(--accent-gold);
       animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
@@ -75,9 +91,90 @@
     }
 
     .loader-cup-icon svg {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       fill: currentColor;
+    }
+
+    /* Desktop Cinema Splash Prompt */
+    .desktop-splash-prompt {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    body.is-desktop-device #loading-curtain.ready-for-desktop-entry .desktop-splash-prompt {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .splash-brand-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: #f5ede3;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .splash-brand-title .gold-txt {
+      color: var(--accent-gold);
+    }
+
+    .splash-brand-sub {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      color: rgba(245, 237, 227, 0.6);
+      margin: 6px 0 24px;
+      text-transform: uppercase;
+    }
+
+    .splash-enter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #e5b36a 0%, #c88d48 100%);
+      color: #0c0907;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 13px 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(229, 179, 106, 0.85);
+      cursor: pointer;
+      box-shadow: 0 0 32px rgba(229, 179, 106, 0.45);
+      animation: pulseGlow 2.2s infinite ease-in-out;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 24px rgba(229, 179, 106, 0.35); transform: scale(1); }
+      50% { box-shadow: 0 0 46px rgba(229, 179, 106, 0.75); transform: scale(1.04); }
+    }
+
+    .splash-enter-btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 55px rgba(229, 179, 106, 0.9);
+    }
+
+    .splash-enter-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+    }
+
+    .splash-click-anywhere {
+      margin-top: 14px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(245, 237, 227, 0.45);
+      text-transform: uppercase;
     }
 
     /* Hero Section (Sticky 250vh Scrollytelling Stage for Butter-Smooth Manual Scrubbing & Cinematic Intro) */
@@ -237,14 +334,27 @@
 </head>
 <body>
 
-  <!-- Minimal Instant Loading Curtain (No ugly bars) -->
+  <!-- Minimal Instant Loading Curtain & Cinema Gateway -->
   <div id="loading-curtain">
-    <div class="loader-emblem">
-      <div class="loader-ring"></div>
-      <div class="loader-cup-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
-        </svg>
+    <div class="curtain-center-box">
+      <div class="loader-emblem">
+        <div class="loader-ring"></div>
+        <div class="loader-cup-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+          </svg>
+        </div>
+      </div>
+      <div id="desktop-splash-prompt" class="desktop-splash-prompt">
+        <h2 class="splash-brand-title">COCOA<span class="gold-txt">CUP</span></h2>
+        <p class="splash-brand-sub">Kerala's Sustainable Tableware</p>
+        <button id="splash-enter-btn" class="splash-enter-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>ENTER FULLSCREEN</span>
+        </button>
+        <span class="splash-click-anywhere">Click anywhere or press Space to enter</span>
       </div>
     </div>
   </div>
@@ -1342,14 +1452,49 @@
         await Promise.all(workers);
       }
 
+      function isCurrentlyFullscreen() {
+        return !!(
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement ||
+          (window.innerHeight >= screen.height - 8 && window.innerWidth >= screen.width - 8)
+        );
+      }
+
+      function enterFullscreenAndDissolveCurtain() {
+        if (!isCurrentlyFullscreen()) {
+          const el = document.documentElement;
+          const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+          if (rfs) {
+            rfs.call(el).catch(() => {});
+          }
+        }
+        if (loadingCurtain) {
+          loadingCurtain.classList.add('loaded');
+          loadingCurtain.classList.remove('ready-for-desktop-entry');
+        }
+      }
+
       async function startLoadingEngine() {
-        // ⚡ INSTANT PAGE LOAD: Immediately load Frame 1 and fade out the curtain (< 0.3s)!
+        // ⚡ INSTANT PAGE LOAD: Immediately load Frame 1
         await preloadFrame(1);
         renderFrame(0);
         state.isReady = true;
         onWindowScroll();
-        if (loadingCurtain) {
-          loadingCurtain.classList.add('loaded');
+
+        // Device logic:
+        // Mobile phones: dissolve curtain immediately (<0.3s) without gate
+        // Desktop: If already in fullscreen (e.g. shortcut / BAT), dissolve immediately.
+        // Otherwise, show the glowing "ENTER FULLSCREEN" button so first click initiates fullscreen.
+        if (isMobileDevice || isCurrentlyFullscreen()) {
+          if (loadingCurtain) {
+            loadingCurtain.classList.add('loaded');
+          }
+        } else {
+          if (loadingCurtain) {
+            loadingCurtain.classList.add('ready-for-desktop-entry');
+          }
         }
 
         // Stage 1: Fast background keyframe skeleton (every 5th frame = 48 frames, only ~7.5MB)
@@ -1370,6 +1515,29 @@
       }
 
       startLoadingEngine();
+
+      if (loadingCurtain) {
+        loadingCurtain.addEventListener('click', () => {
+          enterFullscreenAndDissolveCurtain();
+        });
+      }
+
+      const splashEnterBtn = document.getElementById('splash-enter-btn');
+      if (splashEnterBtn) {
+        splashEnterBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          enterFullscreenAndDissolveCurtain();
+        });
+      }
+
+      window.addEventListener('keydown', (e) => {
+        if (loadingCurtain && !loadingCurtain.classList.contains('loaded')) {
+          if (e.code === 'Space' || e.code === 'Enter' || e.code === 'KeyF') {
+            e.preventDefault();
+            enterFullscreenAndDissolveCurtain();
+          }
+        }
+      });
 
       // Intelligent Nearest-Frame Resolution (Never stops, never flashes, never falls back to frame 1)
       function getBestLoadedImage(targetIdx) {
@@ -1632,7 +1800,9 @@
         const stageContainer = document.getElementById('stage-container');
         if (stageContainer) {
           stageContainer.addEventListener('click', () => {
-            toggleFullscreen();
+            if (!document.fullscreenElement) {
+              enterFullscreen();
+            }
             if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
               playIntroAndAdvance();
             }
@@ -1651,28 +1821,59 @@
       const fsBtn = document.getElementById('hero-fullscreen-btn');
       const fsText = document.getElementById('fullscreen-btn-text');
 
+      function enterFullscreen() {
+        const el = document.documentElement;
+        const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (rfs) {
+          rfs.call(el).catch(() => {});
+        }
+      }
+
+      function exitFullscreen() {
+        const efs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (efs) {
+          efs.call(document).catch(() => {});
+        }
+      }
+
       function toggleFullscreen() {
         if (!document.fullscreenElement) {
-          const el = document.documentElement;
-          const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-          if (rfs) {
-            rfs.call(el).catch(() => {});
-          }
+          enterFullscreen();
         } else {
-          const efs = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-          if (efs) {
-            efs.call(document).catch(() => {});
-          }
+          exitFullscreen();
         }
       }
 
       function updateFullscreenUI() {
-        if (!fsText) return;
-        fsText.textContent = 'Exit Fullscreen ⛶';
+        if (!fsBtn) return;
+        const isFS = isCurrentlyFullscreen();
+        if (isFS) {
+          fsBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 14 10 14 10 20"></polyline>
+              <polyline points="20 10 14 10 14 4"></polyline>
+              <line x1="14" y1="10" x2="21" y2="3"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+            <span id="fullscreen-btn-text">Exit Fullscreen ⛶</span>
+          `;
+          fsBtn.setAttribute('title', 'Exit Fullscreen Mode (Press Esc or F)');
+        } else {
+          fsBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <span id="fullscreen-btn-text">Exit Fullscreen ⛶</span>
+          `;
+          fsBtn.setAttribute('title', 'Fullscreen Mode (Press F)');
+        }
       }
 
       document.addEventListener('fullscreenchange', updateFullscreenUI);
       document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+      window.addEventListener('resize', () => {
+        if (!isMobileDevice) updateFullscreenUI();
+      }, { passive: true });
 
       if (fsBtn) {
         fsBtn.addEventListener('click', (e) => {
@@ -1681,18 +1882,18 @@
         });
       }
 
-      // Instant Auto-Fullscreen Attempts (Page Start + Any First Gesture)
+      // First click on stage enters fullscreen if not already in it
       if (!isMobileDevice) {
-        // Attempt immediate fullscreen on load
         window.addEventListener('load', () => {
-          if (!document.fullscreenElement) toggleFullscreen();
+          if (!isCurrentlyFullscreen()) {
+            enterFullscreen();
+          }
         });
 
-        // Trigger on any first interaction (click, pointer, key)
-        ['click', 'pointerdown', 'keydown'].forEach(evt => {
+        ['click', 'pointerdown'].forEach(evt => {
           window.addEventListener(evt, () => {
-            if (!document.fullscreenElement) {
-              toggleFullscreen();
+            if (!isCurrentlyFullscreen()) {
+              enterFullscreen();
             }
           }, { once: true, passive: true });
         });
