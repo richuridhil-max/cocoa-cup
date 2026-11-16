@@ -250,7 +250,7 @@
        HERO SCROLL STAGE (100% Full Clean — No Bottom Bar, Auto-Rotating 3D Cup)
        ========================================================================== -->
   <section id="hero-scroll-section">
-    <div id="stage-container" title="Click or Space to Pause/Resume Rotation • Scroll down for details">
+    <div id="stage-container" title="Scroll down to rotate & explore the 3D Cocoa Cup">
       <div id="canvas-wrapper">
         <canvas id="frameCanvas" class="enhanced-quality"></canvas>
       </div>
@@ -1175,20 +1175,15 @@
 
       document.body.classList.add(isMobileDevice ? 'is-mobile-device' : 'is-desktop-device');
 
-      // State Management: Mobile = Pure Finger Scrubbing | Laptop = Cinematic Auto 6s Intro + Smooth Jump
+      // State Management: 100% Pure Manual Interactive Scroll Scrubbing (Laptop & Mobile)
       const state = {
         loadedCount: 0,
         images: new Array(TOTAL_FRAMES + 1),
         isReady: false,
         
-        // Laptop Cinematic Intro State
-        isAutoPlayingIntro: false,
-        isTransitioningToContent: false,
-        introCompleted: isMobileDevice, // Mobile starts in manual scrub; Laptop waits for first swipe/scroll!
-        
         targetFraction: 0,
         currentFraction: 0,
-        easeFactor: isMobileDevice ? 0.24 : 0.08, // Mobile: responsive finger tracking | Laptop: silky inertia
+        easeFactor: isMobileDevice ? 0.24 : 0.14, // Responsive direct scrub
         
         // Display & Optical Engine
         subframeBlend: false,
@@ -1386,97 +1381,8 @@
         if (hint) hint.classList.add('hidden');
       }
 
-      // Laptop-Only: 6.0s Cinematic Auto Intro Sequence with 0ms Cushioned Jump to Products
-      function playIntroAndAdvance() {
-        if (isMobileDevice || state.isAutoPlayingIntro || state.introCompleted || state.isTransitioningToContent) return;
-        state.isAutoPlayingIntro = true;
-        hideMobileHint();
-
-        // Lock scroll during 6s auto animation on desktop so user enjoys the full story
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-
-        const duration = 6000; // Exact 6.0 seconds
-        const startTime = performance.now();
-        const startFraction = state.currentFraction;
-        const targetFraction = 1.0;
-        let hasJumped = false;
-
-        function stepIntro(now) {
-          const elapsed = now - startTime;
-          const progress = Math.min(1, elapsed / duration);
-
-          // Fluid sinusoidal ease-in-out curve
-          const ease = 0.5 * (1 - Math.cos(Math.PI * progress));
-
-          state.currentFraction = startFraction + (targetFraction - startFraction) * ease;
-          state.targetFraction = state.currentFraction;
-          renderFrame(state.currentFraction);
-
-          // The EXACT INSTANT the cup finishes filling with hot chocolate:
-          // Immediately initiate the silky-smooth jump with ZERO lag & zero pause!
-          if (!hasJumped && progress >= 1.0) {
-            hasJumped = true;
-            state.currentFraction = 1.0;
-            state.targetFraction = 1.0;
-            renderFrame(1.0);
-            state.isAutoPlayingIntro = false;
-
-            smoothJumpToProducts();
-            return;
-          }
-
-          if (progress < 1 && !hasJumped) {
-            requestAnimationFrame(stepIntro);
-          }
-        }
-
-        requestAnimationFrame(stepIntro);
-      }
-
-      // Buttery Smooth Cushioned Slide to 2nd Page (Zero lag, zero tearing, laptop header offset aware)
-      function smoothJumpToProducts() {
-        state.isTransitioningToContent = true;
-
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-
-        const nextSection = document.getElementById('products');
-        if (!nextSection) {
-          state.isTransitioningToContent = false;
-          state.introCompleted = true;
-          return;
-        }
-
-        const startY = window.pageYOffset || document.documentElement.scrollTop;
-        const headerH = (siteHeader && siteHeader.offsetHeight) ? siteHeader.offsetHeight : 60;
-        const targetY = Math.max(0, nextSection.getBoundingClientRect().top + startY - headerH + 8);
-        const slideDuration = 520; // 520ms silky smooth cushioned glide
-        const slideStart = performance.now();
-
-        function stepSlide(now) {
-          const elapsed = now - slideStart;
-          const p = Math.min(1, elapsed / slideDuration);
-          const ease = 0.5 * (1 - Math.cos(Math.PI * p));
-          window.scrollTo(0, startY + (targetY - startY) * ease);
-
-          if (p < 1) {
-            requestAnimationFrame(stepSlide);
-          } else {
-            window.scrollTo(0, targetY);
-            state.isTransitioningToContent = false;
-            state.introCompleted = true; // Manual control is now permanently active
-            onWindowScroll();
-          }
-        }
-
-        requestAnimationFrame(stepSlide);
-      }
-
-      // Unified Scroll Monitor (Mobile: 250dvh sticky scrub | Laptop: intro completion & manual scrub)
+      // Unified Scroll Monitor (100% Pure Manual Scrubbing on Both Laptop & Mobile)
       function onWindowScroll() {
-        if (state.isAutoPlayingIntro || state.isTransitioningToContent) return;
-
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const windowH = window.innerHeight || 800;
 
@@ -1484,7 +1390,7 @@
           hideMobileHint();
         }
 
-        // Manual 3D Animation Scrubbing across the 250dvh track (Works on BOTH Laptop & Mobile!)
+        // Direct 3D Animation Scrubbing across the 250dvh sticky track
         const heroRect = heroScrollSection.getBoundingClientRect();
         const heroTop = heroRect.top + scrollTop;
         const heroH = heroScrollSection.offsetHeight;
@@ -1505,20 +1411,18 @@
       window.addEventListener('scroll', onWindowScroll, { passive: true });
       onWindowScroll();
 
-      // Continuous Physics Render Loop (Silky 60fps / 120fps direct finger scrubbing & inertia)
+      // Continuous Physics Render Loop (Silky 60fps / 120fps direct scrubbing & inertia)
       function updatePhysicsAndRender() {
-        if (!state.isAutoPlayingIntro && !state.isTransitioningToContent && (state.introCompleted || isMobileDevice)) {
-          const diff = state.targetFraction - state.currentFraction;
-          if (Math.abs(diff) > 0.0001) {
-            state.currentFraction += diff * state.easeFactor;
-            if (state.isReady) {
-              renderFrame(state.currentFraction);
-            }
-          } else if (state.currentFraction !== state.targetFraction) {
-            state.currentFraction = state.targetFraction;
-            if (state.isReady) {
-              renderFrame(state.currentFraction);
-            }
+        const diff = state.targetFraction - state.currentFraction;
+        if (Math.abs(diff) > 0.0001) {
+          state.currentFraction += diff * state.easeFactor;
+          if (state.isReady) {
+            renderFrame(state.currentFraction);
+          }
+        } else if (state.currentFraction !== state.targetFraction) {
+          state.currentFraction = state.targetFraction;
+          if (state.isReady) {
+            renderFrame(state.currentFraction);
           }
         }
 
@@ -1527,49 +1431,8 @@
 
       requestAnimationFrame(updatePhysicsAndRender);
 
-      // Laptop-Specific Event Listeners (First Scroll / Down Arrow / Click triggers 6s Cinematic Intro)
+      // Silent automatic fullscreen on first desktop interaction (first click anywhere or keypress)
       if (!isMobileDevice) {
-        window.addEventListener('wheel', (e) => {
-          if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop <= 60 && e.deltaY > 0) {
-              if (e.cancelable) e.preventDefault();
-              playIntroAndAdvance();
-              return;
-            }
-          }
-          if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
-            if (e.cancelable) e.preventDefault();
-          }
-        }, { passive: false });
-
-        window.addEventListener('keydown', (e) => {
-          if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop <= 60 && (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space')) {
-              e.preventDefault();
-              playIntroAndAdvance();
-              return;
-            }
-          }
-
-          if (state.isAutoPlayingIntro || state.isTransitioningToContent) {
-            if (e.code === 'ArrowDown' || e.code === 'PageDown' || e.code === 'Space') {
-              e.preventDefault();
-            }
-          }
-        });
-
-        const stageContainer = document.getElementById('stage-container');
-        if (stageContainer) {
-          stageContainer.addEventListener('click', () => {
-            if (!state.introCompleted && !state.isAutoPlayingIntro && !state.isTransitioningToContent) {
-              playIntroAndAdvance();
-            }
-          });
-        }
-
-        // Silent automatic fullscreen on first desktop interaction (first click anywhere or keypress)
         ['click', 'pointerdown', 'keydown'].forEach(evt => {
           window.addEventListener(evt, () => {
             if (!document.fullscreenElement) {
