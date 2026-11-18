@@ -451,7 +451,7 @@
         <!-- Fast Metrics Strip -->
         <div class="metrics-strip">
           <div class="metric-pill">
-            <div class="metric-val">₹12</div>
+            <div class="metric-val">₹7</div>
             <div class="metric-label">Benchmark Base Rate / Unit</div>
           </div>
           <div class="metric-pill">
@@ -518,7 +518,7 @@
             </ul>
             <div class="product-pricing-bar">
               <div>
-                <span class="price-num">₹10.50</span>
+                <span class="price-num">₹5.50</span>
                 <span class="price-note">/ unit wholesale</span>
               </div>
               <span class="price-note">MOQ: 500 pcs</span>
@@ -562,7 +562,7 @@
             </ul>
             <div class="product-pricing-bar">
               <div>
-                <span class="price-num">₹12.00</span>
+                <span class="price-num">₹7.00</span>
                 <span class="price-note">/ unit base rate</span>
               </div>
               <span class="price-note">MOQ: 500 pcs</span>
@@ -605,7 +605,7 @@
             </ul>
             <div class="product-pricing-bar">
               <div>
-                <span class="price-num">₹13.50</span>
+                <span class="price-num">₹8.50</span>
                 <span class="price-note">/ unit wholesale</span>
               </div>
               <span class="price-note">MOQ: 500 pcs</span>
@@ -660,8 +660,8 @@
           <div class="tier-card popular">
             <span class="tier-badge" style="color:var(--accent-gold);">Recommended</span>
             <h4 class="tier-name">Cafe Starter</h4>
-            <div class="tier-price">₹6,000 <span>/ batch</span></div>
-            <div class="tier-subtext">500 Flagship cups @ ₹12.00 / cup baseline</div>
+            <div class="tier-price">₹3,500 <span>/ batch</span></div>
+            <div class="tier-subtext">500 Flagship cups @ ₹7.00 / cup baseline</div>
             <ul class="tier-features">
               <li class="tier-feature-item">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -687,8 +687,8 @@
           <div class="tier-card">
             <span class="tier-badge">High Volume Cafe Chains</span>
             <h4 class="tier-name">Commercial Bulk</h4>
-            <div class="tier-price">₹10.50 <span>/ cup</span></div>
-            <div class="tier-subtext">5,000+ units (Total ₹52,500)</div>
+            <div class="tier-price">₹6.00 <span>/ cup</span></div>
+            <div class="tier-subtext">5,000+ units (Total ₹30,000)</div>
             <ul class="tier-features">
               <li class="tier-feature-item">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -696,7 +696,7 @@
               </li>
               <li class="tier-feature-item">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                ₹1.50 / Cup Volume Discount
+                ₹1.00 / Cup Volume Discount
               </li>
               <li class="tier-feature-item">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -768,7 +768,7 @@
               <div class="calc-stat-label">CO2e Emissions Diverted</div>
             </div>
             <div class="calc-stat-card">
-              <div class="calc-stat-val" id="calc-monthly-cost">₹90,000</div>
+              <div class="calc-stat-val" id="calc-monthly-cost">₹45,000</div>
               <div class="calc-stat-label">Est. Monthly Tableware Investment</div>
             </div>
           </div>
@@ -959,8 +959,8 @@
       // Approx 46 grams CO2e saved per cup converted from plastic-lined
       const co2Kg = Math.round(monthlyCups * 0.046);
       co2El.textContent = co2Kg.toLocaleString() + ' kg';
-      // Rate: benchmark ₹12/cup (discounted to ₹10.50 if > 5000/mo)
-      const unitRate = monthlyCups >= 5000 ? 10.5 : 12;
+      // Rate: benchmark ₹7/cup (discounted to ₹6.00 if >= 5000/mo)
+      const unitRate = monthlyCups >= 5000 ? 6.0 : 7.0;
       const cost = Math.round(monthlyCups * unitRate);
       costEl.textContent = '₹' + cost.toLocaleString();
     }

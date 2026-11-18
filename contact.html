@@ -406,7 +406,7 @@
             <div class="metric-label">Evaluation Kit (30 Cups)</div>
           </div>
           <div class="metric-pill">
-            <div class="metric-val">₹12.00</div>
+            <div class="metric-val">₹7.00</div>
             <div class="metric-label">Cafe Starter Rate / Unit</div>
           </div>
           <div class="metric-pill">
@@ -477,13 +477,13 @@
                     <input type="radio" name="orderTier" value="sample" checked>
                     <span>Sample Kit (₹499)</span>
                   </label>
-                  <label class="custom-check-pill" data-tier="starter" data-price="6000" data-desc="500 Flagship Cups (₹12/cup)">
+                  <label class="custom-check-pill" data-tier="starter" data-price="3500" data-desc="500 Flagship Cups (₹7/cup)">
                     <input type="radio" name="orderTier" value="starter">
-                    <span>Cafe Starter (500 Cups &bull; ₹6,000)</span>
+                    <span>Cafe Starter (500 Cups &bull; ₹3,500)</span>
                   </label>
-                  <label class="custom-check-pill" data-tier="wholesale" data-price="52500" data-desc="5,000+ Cups (₹10.50/cup)">
+                  <label class="custom-check-pill" data-tier="wholesale" data-price="30000" data-desc="5,000+ Cups (₹6/cup)">
                     <input type="radio" name="orderTier" value="wholesale">
-                    <span>Commercial Bulk (5,000 Cups)</span>
+                    <span>Commercial Bulk (5,000 Cups &bull; ₹30,000)</span>
                   </label>
                   <label class="custom-check-pill" data-tier="custom" data-price="Quote" data-desc="25,000+ Units with Logo Moulding">
                     <input type="radio" name="orderTier" value="custom">
@@ -543,7 +543,7 @@
                 </li>
                 <li class="summary-row">
                   <span class="summary-label">Benchmark Rate</span>
-                  <span class="summary-value">₹12.00 / cup base reference</span>
+                  <span class="summary-value">₹7.00 / cup base reference</span>
                 </li>
                 <li class="summary-row">
                   <span class="summary-label">Freight Across Kerala</span>
@@ -775,12 +775,12 @@
           summaryTotal.textContent = '₹499';
         } else if (tier === 'starter') {
           summaryTierName.textContent = 'Cafe Starter Batch';
-          summaryInclusions.textContent = '500 Flagship Cups (200ml) @ ₹12.00/cup';
-          summaryTotal.textContent = '₹6,000';
+          summaryInclusions.textContent = '500 Flagship Cups (200ml) @ ₹7.00/cup';
+          summaryTotal.textContent = '₹3,500';
         } else if (tier === 'wholesale') {
           summaryTierName.textContent = 'Commercial Bulk Batch';
-          summaryInclusions.textContent = '5,000 Cups @ ₹10.50/cup discounted';
-          summaryTotal.textContent = '₹52,500';
+          summaryInclusions.textContent = '5,000 Cups @ ₹6.00/cup discounted';
+          summaryTotal.textContent = '₹30,000';
         } else if (tier === 'custom') {
           summaryTierName.textContent = 'Custom Logo Embossing Batch';
           summaryInclusions.textContent = '25,000+ Units with Custom Tooling';
